@@ -21,15 +21,15 @@ jobs:
           pacman-key --init
           pacman-key --populate archlinux
           pacman -Syu --noconfirm base-devel archiso grub mtools libisoburn squashfs-tools \
-            rust gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 graphene
+            gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 graphene
 
-      - name: Build Rust Graphical Installer Binary
+      - name: Build Native C GTK4 Graphical Installer Binary
         run: |
-          cargo build --release --manifest-path installer/Cargo.toml
           mkdir -p iso/airootfs/usr/bin
-          find . -name "shobika-installer" -type f -exec cp {} iso/airootfs/usr/bin/shobika-installer \;
-          ls -la iso/airootfs/usr/bin/shobika-installer
+          gcc -O2 installer/main.c -o iso/airootfs/usr/bin/shobika-installer $(pkg-config --cflags --libs gtk4)
+          cp installer/backend.sh iso/airootfs/usr/bin/shobika-install-backend
           chmod 755 iso/airootfs/usr/bin/shobika-installer
+          chmod 755 iso/airootfs/usr/bin/shobika-install-backend
           chmod 755 iso/airootfs/usr/bin/shobika-live-setup || true
 
       - name: Configure Systemd Live Desktop Services & Symlinks

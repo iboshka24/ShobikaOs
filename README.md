@@ -93,20 +93,6 @@ It handles:
 
 ---
 
-## Contributing to Official Arch Linux & Linux Kernel
-
-### How to contribute to Arch Linux (AUR & Trusted User / Dev):
-1. **Maintain AUR Packages**: Create an account on [aur.archlinux.org](https://aur.archlinux.org/) and submit PKGBUILDs.
-2. **Arch Wiki & GitLab**: Submit bug reports and merge requests to Arch's official GitLab: [gitlab.archlinux.org](https://gitlab.archlinux.org).
-3. **Become an Arch Trusted User (TU)**: Maintain popular AUR packages and join the Arch community voting process.
-
-### How to contribute to the Linux Kernel:
-1. Clone the Linux kernel tree: `git clone https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git`
-2. Follow the kernel documentation on submitting patches via `git send-email`.
-3. Test kernel builds using `make menuconfig && make -j$(nproc)`.
-
----
-
 ## License
 
 Distributed under the MIT License. See `LICENSE` for details.

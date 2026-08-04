@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::Parser;
 use gtk4::prelude::*;
-use gtk4::{Application, ApplicationWindow, Box as GtkBox, Button, Label, Orientation, Stack, StackSwitcher, ScrolledWindow, ListBox, ListBoxRow, CheckButton, Entry, ComboBoxText, ProgressBar, Separator, Frame, Align, CssProvider, StyleContext, gdk4::Display};
+use gtk4::{Application, ApplicationWindow, Box as GtkBox, Button, Label, Orientation, Stack, StackSwitcher, ScrolledWindow, ListBox, ListBoxRow, CheckButton, Entry, ComboBoxText, ProgressBar, Separator, Frame, Align, CssProvider, StyleContext, gdk::Display};
 use glib::{MainContext, clone};
 use std::process::Command;
 use std::sync::{Arc, Mutex};

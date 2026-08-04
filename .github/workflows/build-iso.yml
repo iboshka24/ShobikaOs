@@ -27,12 +27,9 @@ jobs:
         run: |
           cargo build --release --manifest-path installer/Cargo.toml
           mkdir -p iso/airootfs/usr/bin
-          if [ -f installer/target/release/shobika-installer ]; then
-            cp installer/target/release/shobika-installer iso/airootfs/usr/bin/shobika-installer
-          elif [ -f target/release/shobika-installer ]; then
-            cp target/release/shobika-installer iso/airootfs/usr/bin/shobika-installer
-          fi
-          chmod 755 iso/airootfs/usr/bin/shobika-installer || true
+          find . -name "shobika-installer" -type f -exec cp {} iso/airootfs/usr/bin/shobika-installer \;
+          ls -la iso/airootfs/usr/bin/shobika-installer
+          chmod 755 iso/airootfs/usr/bin/shobika-installer
           chmod 755 iso/airootfs/usr/bin/shobika-live-setup || true
 
       - name: Configure Systemd Live Desktop Services & Symlinks

@@ -46,7 +46,8 @@ static void on_install_start_clicked(GtkButton *btn, gpointer user_data) {
     InstallerApp *app = (InstallerApp*)user_data;
     gtk_widget_set_sensitive(GTK_WIDGET(btn), FALSE);
     save_config(app);
-    system("sudo /usr/bin/shobika-install-backend /tmp/shobika-installer.conf &");
+    int res = system("sudo /usr/bin/shobika-install-backend /tmp/shobika-installer.conf &");
+    (void)res;
 }
 
 static GtkWidget* create_step(const char *title_text, const char *sub_text, GtkWidget *content) {
@@ -70,6 +71,7 @@ static GtkWidget* create_step(const char *title_text, const char *sub_text, GtkW
 }
 
 static void on_next_clicked(GtkButton *btn, gpointer user_data) {
+    (void)btn;
     InstallerApp *app = (InstallerApp*)user_data;
     if (app->current_step < 6) {
         app->current_step++;
@@ -80,6 +82,7 @@ static void on_next_clicked(GtkButton *btn, gpointer user_data) {
 }
 
 static void on_back_clicked(GtkButton *btn, gpointer user_data) {
+    (void)btn;
     InstallerApp *app = (InstallerApp*)user_data;
     if (app->current_step > 0) {
         app->current_step--;
@@ -90,6 +93,7 @@ static void on_back_clicked(GtkButton *btn, gpointer user_data) {
 }
 
 static void activate(GtkApplication *gtk_app, gpointer user_data) {
+    (void)user_data;
     InstallerApp *app = &app_state;
     memset(app, 0, sizeof(InstallerApp));
     strcpy(app->language, "ru_RU.UTF-8");
@@ -196,7 +200,7 @@ static void activate(GtkApplication *gtk_app, gpointer user_data) {
 }
 
 int main(int argc, char **argv) {
-    GtkApplication *app = gtk_application_new("org.shobikaos.installer", G_APPLICATION_FLAGS_NONE);
+    GtkApplication *app = gtk_application_new("org.shobikaos.installer", 0);
     g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
     int status = g_application_run(G_APPLICATION(app), argc, argv);
     g_object_unref(app);

@@ -26,7 +26,7 @@ jobs:
       - name: Build Native C GTK4 Graphical Installer Binary
         run: |
           mkdir -p iso/airootfs/usr/bin
-          gcc -O2 installer/main.c -o iso/airootfs/usr/bin/shobika-installer $(pkg-config --cflags --libs gtk4)
+          gcc -O2 installer/main.c $(pkg-config --cflags gtk4) -o iso/airootfs/usr/bin/shobika-installer $(pkg-config --libs gtk4)
           cp installer/backend.sh iso/airootfs/usr/bin/shobika-install-backend
           chmod 755 iso/airootfs/usr/bin/shobika-installer
           chmod 755 iso/airootfs/usr/bin/shobika-install-backend

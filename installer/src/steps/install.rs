@@ -130,7 +130,11 @@ impl InstallStep {
             status_ui_clone.set_text(&s);
             details_ui_clone.set_text(&d);
             
-            glib::Continue(*finished_arc.lock().unwrap() || error_arc.lock().unwrap().is_some())
+            if *finished_arc.lock().unwrap() || error_arc.lock().unwrap().is_some() {
+                glib::ControlFlow::Break
+            } else {
+                glib::ControlFlow::Continue
+            }
         });
 
         container.append(&content);

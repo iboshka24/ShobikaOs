@@ -83,7 +83,7 @@ impl WallpaperStep {
         // Default selection is aurora
         let selected = Arc::new(Mutex::new("shobikaos-aurora.png".to_string()));
 
-        for (i, wp) in wallpapers.iter().enumerate() {
+        for wp in &wallpapers {
             let row = ListBoxRow::new();
             row.add_css_class("wallpaper-row");
             

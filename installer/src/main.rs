@@ -78,7 +78,7 @@ fn build_ui(app: &Application) {
     for (i, step) in steps.iter().enumerate() {
         let page = step.widget();
         page.set_name(&format!("step-{}", i));
-        stack.add_named(page, &format!("step-{}", i));
+        stack.add_named(page, Some(&format!("step-{}", i)));
     }
 
     let switcher = StackSwitcher::new();

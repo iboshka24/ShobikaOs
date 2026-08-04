@@ -2,6 +2,7 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
 use std::fs;
+use std::process::Command;
 use crate::hardware::HardwareInfo;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

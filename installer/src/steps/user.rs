@@ -25,7 +25,7 @@ impl UserStep {
         form.set_halign(Align::Center);
         form.set_valign(Align::Center);
         form.set_margin_top(24);
-        form.set_max_width(400);
+        form.set_size_request(400, -1);
 
         let username = Arc::new(Mutex::new(String::new()));
         let fullname = Arc::new(Mutex::new(String::new()));

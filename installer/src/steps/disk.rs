@@ -1,9 +1,59 @@
 use gtk4::prelude::*;
 use gtk4::{Box as GtkBox, Label, ListBox, ListBoxRow, Orientation, ScrolledWindow, Align, Button, Separator};
 use std::sync::{Arc, Mutex};
+use std::fs;
 use crate::installer::Installer;
 use crate::steps::{Step, create_step_container};
-use blockdev::BlockDevice;
+
+#[derive(Clone, Debug)]
+pub struct DiskInfo {
+    pub path: String,
+    pub model: String,
+    pub size_gb: f64,
+}
+
+impl DiskInfo {
+    pub fn list_all() -> Vec<Self> {
+        let mut disks = Vec::new();
+        if let Ok(entries) = fs::read_dir("/sys/block") {
+            for entry in entries.flatten() {
+                let name = entry.file_name().to_string_lossy().to_string();
+                if name.starts_with("loop") || name.starts_with("ram") || name.starts_with("sr") || name.starts_with("zram") {
+                    continue;
+                }
+                let path = format!("/dev/{}", name);
+                let size_path = format!("/sys/block/{}/size", name);
+                let model_path = format!("/sys/block/{}/device/model", name);
+                
+                let size_sectors = fs::read_to_string(size_path)
+                    .unwrap_or_default()
+                    .trim()
+                    .parse::<u64>()
+                    .unwrap_or(0);
+                let size_gb = (size_sectors * 512) as f64 / 1_073_741_824.0;
+                
+                if size_gb < 1.0 {
+                    continue;
+                }
+                
+                let model = fs::read_to_string(model_path)
+                    .unwrap_or_else(|_| name.clone())
+                    .trim()
+                    .to_string();
+                
+                disks.push(DiskInfo { path, model, size_gb });
+            }
+        }
+        if disks.is_empty() {
+            disks.push(DiskInfo {
+                path: "/dev/sda".into(),
+                model: "Virtual Disk / QEMU".into(),
+                size_gb: 64.0,
+            });
+        }
+        disks
+    }
+}
 
 pub struct DiskStep {
     container: GtkBox,
@@ -31,12 +81,10 @@ impl DiskStep {
         list.set_selection_mode(gtk4::SelectionMode::Single);
         list.add_css_class("disk-list");
 
-        let devices = BlockDevice::list_all().unwrap_or_default();
+        let devices = DiskInfo::list_all();
         let selected = Arc::new(Mutex::new(None::<String>));
 
         for dev in devices {
-            if dev.size == 0 { continue; }
-            
             let row = ListBoxRow::new();
             row.add_css_class("disk-row");
             
@@ -53,11 +101,11 @@ impl DiskStep {
             let info_box = GtkBox::new(Orientation::Vertical, 4);
             info_box.set_hexpand(true);
             
-            let name = Label::new(Some(&format!("{} ({})", dev.path.display(), dev.model.unwrap_or_default())));
+            let name = Label::new(Some(&format!("{} ({})", dev.path, dev.model)));
             name.add_css_class("disk-name");
             name.set_halign(Align::Start);
             
-            let size = Label::new(Some(&format!("Размер: {:.1} GB", dev.size as f64 / 1e9)));
+            let size = Label::new(Some(&format!("Размер: {:.1} GB", dev.size_gb)));
             size.add_css_class("disk-size");
             size.set_halign(Align::Start);
             
@@ -69,7 +117,7 @@ impl DiskStep {
             row.set_child(Some(&row_box));
             
             let sel = selected.clone();
-            let path = dev.path.to_string_lossy().to_string();
+            let path = dev.path.clone();
             row.connect_activate(move |_| {
                 *sel.lock().unwrap() = Some(path.clone());
             });

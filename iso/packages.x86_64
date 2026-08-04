@@ -1,7 +1,9 @@
-# ShobikaOs - packages for live ISO with graphical installer + branding
+# ShobikaOs - packages for live ISO
+# --- Core ---
 base
 linux
 linux-firmware
+linux-headers
 base-devel
 git
 sudo
@@ -9,23 +11,32 @@ which
 nano
 vim
 
-# Boot
+# --- Archiso live boot (CRITICAL) ---
+mkinitcpio
+mkinitcpio-archiso
+mkinitcpio-nfs-utils
+syslinux
+memtest86+
+memtest86+-efi
+intel-ucode
+amd-ucode
+nbd
+
+# --- Bootloader ---
 grub
 efibootmgr
 os-prober
-memtest86+
 
-# Filesystem
+# --- Filesystem ---
 btrfs-progs
 dosfstools
 e2fsprogs
 ntfs-3g
+squashfs-tools
 
-# Graphical installer dependencies (GTK4 + Rust)
+# --- Graphical installer dependencies (GTK4 + Rust) ---
 gtk4
 libadwaita
-libpanel
-libhandy
 cairo
 pango
 gdk-pixbuf2
@@ -37,12 +48,11 @@ rust
 cargo
 pkgconf
 
-# Display manager for live session
+# --- Display manager for live session ---
 lightdm
 lightdm-gtk-greeter
-lightdm-webkit2-greeter
 
-# X11/Wayland
+# --- X11/Wayland ---
 xorg-server
 xorg-xinit
 xorg-xrandr
@@ -52,62 +62,65 @@ mesa
 vulkan-intel
 vulkan-radeon
 
-# Basic live session DE
+# --- Basic live session DE ---
 cinnamon
-cinnamon-terminal
 nemo
+gnome-terminal
 file-roller
 eog
 evince
 gnome-calculator
 
-# Network
+# --- Network ---
 networkmanager
 network-manager-applet
 dhcpcd
+iwd
+nbd
+nfs-utils
+curl
+wget
+openssh
 
-# Installer tools
+# --- Installer tools ---
 arch-install-scripts
 reflector
 pacman-contrib
 
-# Fonts
+# --- Fonts ---
 noto-fonts
 noto-fonts-emoji
 noto-fonts-cjk
 ttf-jetbrains-mono-nerd
 ttf-font-awesome
 
-# Branding dependencies
+# --- Branding ---
 fastfetch
-plymouth
 papirus-icon-theme
 adwaita-icon-theme
 
-# Misc
+# --- Misc ---
 man-db
 man-pages
 bash-completion
-wget
-curl
 unzip
 p7zip
 htop
 btop
 
-# Audio (PipeWire)
+# --- Audio (PipeWire) ---
 pipewire
 pipewire-pulse
 pipewire-alsa
 wireplumber
 
-# Hardware detection
+# --- Hardware detection ---
 pciutils
 usbutils
 dmidecode
 lshw
 
-# Modern CLI tools
+# --- Modern CLI tools ---
 fzf
 ripgrep
 fd

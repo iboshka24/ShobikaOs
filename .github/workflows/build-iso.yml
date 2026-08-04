@@ -29,7 +29,7 @@ jobs:
           cargo build --release
           cd ..
           mkdir -p iso/airootfs/usr/bin
-          cp installer/target/release/shobika-installer iso/airootfs/usr/bin/shobika-installer
+          find . -name "shobika-installer" -type f -path "*/release/*" -exec cp {} iso/airootfs/usr/bin/shobika-installer \;
           chmod 755 iso/airootfs/usr/bin/shobika-installer
           chmod 755 iso/airootfs/usr/bin/shobika-live-setup
 

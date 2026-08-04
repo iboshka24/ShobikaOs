@@ -6,18 +6,14 @@ description = "Graphical installer for ShobikaOs"
 
 [dependencies]
 gtk4 = "0.9"
-glib = "0.18"
-gio = "0.18"
-cairo-rs = "0.18"
-gdk4 = "0.18"
+glib = "0.20"
+gio = "0.20"
 anyhow = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 toml = "0.8"
 clap = { version = "4.0", features = ["derive"] }
 tokio = { version = "1.0", features = ["full"] }
-sys-mount = "0.4"
-blockdev = "0.4"
 libc = "0.2"
 nix = "0.28"
 

@@ -16,11 +16,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Initialize Pacman Keys and Install Archiso
+      - name: Initialize Pacman Keys and Install Dependencies
         run: |
           pacman-key --init
           pacman-key --populate archlinux
-          pacman -Sy --noconfirm archiso
+          pacman -Syu --noconfirm archiso grub mtools libisoburn squashfs-tools
 
       - name: Build ISO Image
         run: |
@@ -39,4 +39,3 @@ jobs:
         with:
           files: out/*.iso
           generate_release_notes: true
-

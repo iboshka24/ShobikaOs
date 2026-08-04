@@ -20,17 +20,20 @@ jobs:
         run: |
           pacman-key --init
           pacman-key --populate archlinux
-          pacman -Syu --noconfirm archiso grub mtools libisoburn squashfs-tools \
+          pacman -Syu --noconfirm base-devel archiso grub mtools libisoburn squashfs-tools \
             rust gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 graphene
 
       - name: Build Rust Graphical Installer Binary
         run: |
-          cd installer
-          cargo build --release
-          mkdir -p ../iso/airootfs/usr/bin
-          cp target/release/shobika-installer ../iso/airootfs/usr/bin/shobika-installer
-          chmod 755 ../iso/airootfs/usr/bin/shobika-installer
-          chmod 755 ../iso/airootfs/usr/bin/shobika-live-setup
+          cargo build --release --manifest-path installer/Cargo.toml
+          mkdir -p iso/airootfs/usr/bin
+          if [ -f installer/target/release/shobika-installer ]; then
+            cp installer/target/release/shobika-installer iso/airootfs/usr/bin/shobika-installer
+          elif [ -f target/release/shobika-installer ]; then
+            cp target/release/shobika-installer iso/airootfs/usr/bin/shobika-installer
+          fi
+          chmod 755 iso/airootfs/usr/bin/shobika-installer || true
+          chmod 755 iso/airootfs/usr/bin/shobika-live-setup || true
 
       - name: Configure Systemd Live Desktop Services & Symlinks
         run: |

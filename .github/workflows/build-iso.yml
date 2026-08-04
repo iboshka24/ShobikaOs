@@ -16,11 +16,36 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Initialize Pacman Keys and Install Dependencies
+      - name: Initialize Pacman Keys and Install Build Dependencies
         run: |
           pacman-key --init
           pacman-key --populate archlinux
-          pacman -Syu --noconfirm archiso grub mtools libisoburn squashfs-tools
+          pacman -Syu --noconfirm archiso grub mtools libisoburn squashfs-tools \
+            rust gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 graphene
+
+      - name: Build Rust Graphical Installer Binary
+        run: |
+          cd installer
+          cargo build --release
+          cd ..
+          mkdir -p iso/airootfs/usr/bin
+          cp installer/target/release/shobika-installer iso/airootfs/usr/bin/shobika-installer
+          chmod 755 iso/airootfs/usr/bin/shobika-installer
+          chmod 755 iso/airootfs/usr/bin/shobika-live-setup
+
+      - name: Configure Systemd Live Desktop Services & Symlinks
+        run: |
+          mkdir -p iso/airootfs/etc/systemd/system/multi-user.target.wants
+          mkdir -p iso/airootfs/etc/systemd/system/graphical.target.wants
+          
+          # Enable shobika-live-setup service (runs before lightdm to configure liveuser & desktop)
+          ln -sf /etc/systemd/system/shobika-live-setup.service iso/airootfs/etc/systemd/system/multi-user.target.wants/shobika-live-setup.service
+          
+          # Enable LightDM Display Manager & set Graphical target as default
+          ln -sf /usr/lib/systemd/system/lightdm.service iso/airootfs/etc/systemd/system/display-manager.service
+          ln -sf /usr/lib/systemd/system/lightdm.service iso/airootfs/etc/systemd/system/graphical.target.wants/lightdm.service
+          ln -sf /usr/lib/systemd/system/NetworkManager.service iso/airootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+          ln -sf /usr/lib/systemd/system/graphical.target iso/airootfs/etc/systemd/system/default.target
 
       - name: Build ISO Image
         run: |

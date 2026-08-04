@@ -1,25 +1,54 @@
 #!/bin/bash
-# ShobikaOs live user setup
-# This runs in the live ISO to create the liveuser for auto-login
+# ShobikaOs Live Environment Initialization Script
+# Prepares liveuser, Cinnamon desktop session, desktop launcher, and LightDM autologin
 
 set -e
 
-# Create liveuser
-useradd -m -G wheel,video,audio,storage,network -s /bin/bash liveuser
-echo "liveuser:liveuser" | chpasswd
-echo "root:shobikaos" | chpasswd
+# 1. Create liveuser if not already created
+if ! id -u liveuser >/dev/null 2>&1; then
+    useradd -m -g users -G wheel,video,audio,storage,network,input -s /bin/bash liveuser
+    echo "liveuser:liveuser" | chpasswd
+    echo "root:shobikaos" | chpasswd
+    passwd -d liveuser || true
+fi
 
-# Enable sudo for wheel
-echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/99-wheel
+# 2. Enable sudo without password for liveuser
+mkdir -p /etc/sudoers.d
+cat > /etc/sudoers.d/99-liveuser << 'EOF'
+liveuser ALL=(ALL:ALL) NOPASSWD: ALL
+root ALL=(ALL:ALL) NOPASSWD: ALL
+EOF
+chmod 440 /etc/sudoers.d/99-liveuser
 
-# Enable services
-systemctl enable NetworkManager
-systemctl enable lightdm
-systemctl enable shobika-installer.service
+# 3. Create Desktop directory & Autostart directory
+mkdir -p /home/liveuser/Desktop /home/liveuser/.config/autostart
+mkdir -p /etc/skel/Desktop /etc/skel/.config/autostart
 
-# Set up auto-login for liveuser
+# 4. Create "Install ShobikaOs" desktop launcher (Linux Mint style)
+cat > /home/liveuser/Desktop/install-shobikaos.desktop << 'EOF'
+[Desktop Entry]
+Name=Install ShobikaOs
+Name[ru]=Установить ShobikaOs
+Comment=Launch ShobikaOs Graphical Installer
+Exec=sudo /usr/bin/shobika-installer
+Icon=system-software-install
+Terminal=false
+Type=Application
+Categories=System;Installer;
+Keywords=installer;shobikaos;system;
+EOF
+
+chmod +x /home/liveuser/Desktop/install-shobikaos.desktop
+cp /home/liveuser/Desktop/install-shobikaos.desktop /home/liveuser/.config/autostart/shobika-installer.desktop
+cp /home/liveuser/Desktop/install-shobikaos.desktop /etc/skel/Desktop/
+cp /home/liveuser/Desktop/install-shobikaos.desktop /etc/skel/.config/autostart/
+chmod +x /etc/skel/Desktop/install-shobikaos.desktop
+
+chown -R liveuser:users /home/liveuser
+
+# 5. Configure LightDM for instant autologin into Cinnamon Live session
 mkdir -p /etc/lightdm
-cat > /etc/lightdm/lightdm.conf << 'LIGHTDM_EOF'
+cat > /etc/lightdm/lightdm.conf << 'EOF'
 [LightDM]
 minimum-vt=1
 run-directory=/run/lightdm
@@ -29,24 +58,21 @@ type=local
 pam-service=lightdm
 pam-autologin-service=lightdm-autologin
 greeter-session=lightdm-gtk-greeter
+user-session=cinnamon
 autologin-user=liveuser
 autologin-user-timeout=0
 session-wrapper=/etc/lightdm/Xsession
 xserver-command=X -core
-LIGHTDM_EOF
+EOF
 
-# Greeter config
-cat > /etc/lightdm/lightdm-gtk-greeter.conf << 'GREETER_EOF'
+cat > /etc/lightdm/lightdm-gtk-greeter.conf << 'EOF'
 [greeter]
-background=/usr/share/backgrounds/shobikaos-wallpaper.png
+background=/usr/share/backgrounds/shobikaos-aurora.png
 theme-name=Arc-Dark
 icon-theme-name=Papirus-Dark
 font-name=Noto Sans 10
-xft-antialias=true
-xft-hintstyle=hintslight
-xft-rgba=rgb
-show-indicators=~host;~spacer;~clock;~spacer;~session;~a11y;~power
+show-indicators=~host;~spacer;~clock;~spacer;~power
 clock-format=%H:%M
-GREETER_EOF
+EOF
 
-echo "Live user configured"
+echo "ShobikaOs live session configured successfully."

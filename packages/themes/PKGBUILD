@@ -1,0 +1,11 @@
+# Maintainer: ShobikaOs <shobikaos@example.com>
+pkgname=shobikaos-themes
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="ShobikaOs default themes (GTK, terminal, grub)"
+arch=('any')
+license=('MIT')
+
+package() {
+    mkdir -p "$pkgdir/etc/shobikaos/themes"
+}

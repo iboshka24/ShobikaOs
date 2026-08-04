@@ -1,0 +1,26 @@
+name: Build ShobikaOs ISO
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install archiso
+        run: |
+          sudo pacman -Sy --noconfirm archiso
+
+      - name: Build ISO
+        run: |
+          sudo mkarchiso -v -w /tmp/shobikaiso -o out iso/
+
+      - name: Upload ISO
+        uses: softprops/action-gh-release@v2
+        with:
+          files: out/shobikaos*.iso
+          generate_release_notes: true

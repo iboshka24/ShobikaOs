@@ -1,0 +1,28 @@
+[package]
+name = "shobika-installer"
+version = "0.1.0"
+edition = "2021"
+description = "Graphical installer for ShobikaOs"
+
+[dependencies]
+gtk4 = "0.9"
+glib = "0.18"
+gio = "0.18"
+cairo-rs = "0.18"
+gdk4 = "0.18"
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+clap = { version = "4.0", features = ["derive"] }
+tokio = { version = "1.0", features = ["full"] }
+sys-mount = "0.4"
+blockdev = "0.5"
+libc = "0.2"
+nix = "0.28"
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true
+panic = "abort"

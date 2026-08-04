@@ -1,0 +1,593 @@
+/* ShobikaOs GTK4 Theme - Arc-Dark variant with ShobikaOs accents */
+/* Install to /usr/share/themes/ShobikaOs-Dark/gtk-4.0/gtk.css */
+
+@import url("resource:///org/gtk/libgtk/theme/Adwaita/gtk.css");
+
+/* ShobikaOs Color Palette */
+:root {
+  --shobika-bg: #1e1e2e;
+  --shobika-bg-alt: #181825;
+  --shobika-bg-light: #313244;
+  --shobika-fg: #cdd6f4;
+  --shobika-fg-muted: #a6adc8;
+  --shobika-accent: #89b4fa;
+  --shobika-accent-hover: #7aa2f7;
+  --shobika-accent-press: #6c8ed4;
+  --shobika-success: #a6e3a1;
+  --shobika-warning: #f9e2af;
+  --shobika-error: #f38ba8;
+  --shobika-border: #45475a;
+  --shobika-border-focus: #89b4fa;
+  --shobika-card: #1e1e2e;
+  --shobika-card-hover: #29293d;
+  --shobika-radius: 8px;
+  --shobika-radius-lg: 12px;
+}
+
+/* Global */
+* {
+  background-color: var(--shobika-bg);
+  color: var(--shobika-fg);
+  border-color: var(--shobika-border);
+  font-family: "Noto Sans", "JetBrains Mono", sans-serif;
+}
+
+/* Buttons */
+button,
+button.flat,
+button.image-button,
+button.text-button {
+  background-color: var(--shobika-bg-light);
+  color: var(--shobika-fg);
+  border: 1px solid var(--shobika-border);
+  border-radius: var(--shobika-radius);
+  padding: 8px 16px;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+}
+
+button:hover,
+button.flat:hover,
+button.image-button:hover,
+button.text-button:hover {
+  background-color: var(--shobika-card-hover);
+  border-color: var(--shobika-accent);
+  color: var(--shobika-accent);
+}
+
+button:active,
+button.flat:active,
+button.image-button:active,
+button.text-button:active {
+  background-color: var(--shobika-accent-press);
+  color: var(--shobika-bg);
+  border-color: var(--shobika-accent-press);
+}
+
+button.suggested-action,
+button.suggested-action.flat {
+  background-color: var(--shobika-accent);
+  color: var(--shobika-bg);
+  border-color: var(--shobika-accent);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(137, 180, 250, 0.3);
+}
+
+button.suggested-action:hover {
+  background-color: var(--shobika-accent-hover);
+  box-shadow: 0 4px 16px rgba(137, 180, 250, 0.4);
+}
+
+button.destructive-action {
+  background-color: var(--shobika-error);
+  color: var(--shobika-bg);
+  border-color: var(--shobika-error);
+}
+
+button.destructive-action:hover {
+  background-color: #e87d7d;
+}
+
+/* Entry, SpinButton, ComboBox, TextView */
+entry,
+spinbutton,
+combobox,
+textview,
+text {
+  background-color: var(--shobika-bg);
+  color: var(--shobika-fg);
+  border: 1px solid var(--shobika-border);
+  border-radius: var(--shobika-radius);
+  padding: 10px 12px;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  caret-color: var(--shobika-accent);
+}
+
+entry:focus,
+spinbutton:focus,
+combobox:focus,
+textview:focus {
+  border-color: var(--shobika-accent);
+  box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.2);
+  outline: none;
+}
+
+entry:hover,
+spinbutton:hover,
+combobox:hover {
+  border-color: var(--shobika-border);
+}
+
+entry:disabled,
+spinbutton:disabled,
+combobox:disabled,
+textview:disabled {
+  background-color: var(--shobika-bg-alt);
+  color: var(--shobika-fg-muted);
+  border-color: var(--shobika-border);
+}
+
+/* Headerbar */
+headerbar,
+headerbar entry,
+headerbar spinbutton,
+headerbar combobox {
+  background-color: var(--shobika-bg-alt);
+  border-bottom: 1px solid var(--shobika-border);
+  color: var(--shobika-fg);
+}
+
+headerbar button {
+  background-color: transparent;
+  border: none;
+  color: var(--shobika-fg-muted);
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 150ms ease;
+}
+
+headerbar button:hover {
+  background-color: var(--shobika-bg-light);
+  color: var(--shobika-accent);
+}
+
+headerbar button:active {
+  background-color: var(--shobika-accent);
+  color: var(--shobika-bg);
+}
+
+headerbar title {
+  color: var(--shobika-fg);
+  font-weight: 600;
+}
+
+/* Sidebar / List / Treeview / ColumnView */
+sidebar,
+list,
+treeview,
+columnview,
+listview {
+  background-color: var(--shobika-bg-alt);
+  border: 1px solid var(--shobika-border);
+  border-radius: var(--shobika-radius-lg);
+}
+
+list row,
+treeview row,
+columnview row {
+  background-color: transparent;
+  color: var(--shobika-fg);
+  border-radius: 6px;
+  padding: 10px 14px;
+  transition: background-color 150ms ease;
+}
+
+list row:hover,
+treeview row:hover,
+columnview row:hover {
+  background-color: var(--shobika-bg-light);
+}
+
+list row:selected,
+treeview row:selected,
+columnview row:selected {
+  background-color: var(--shobika-accent);
+  color: var(--shobika-bg);
+}
+
+list row:selected:focus,
+treeview row:selected:focus {
+  background-color: var(--shobika-accent-hover);
+}
+
+/* Notebook / Tabs */
+notebook {
+  background-color: var(--shobika-bg);
+}
+
+notebook header {
+  background-color: var(--shobika-bg-alt);
+  border-bottom: 1px solid var(--shobika-border);
+}
+
+notebook tab {
+  background-color: transparent;
+  color: var(--shobika-fg-muted);
+  padding: 10px 20px;
+  border-radius: var(--shobika-radius) var(--shobika-radius) 0 0;
+  transition: all 150ms ease;
+  font-weight: 500;
+}
+
+notebook tab:hover {
+  color: var(--shobika-fg);
+  background-color: var(--shobika-bg-light);
+}
+
+notebook tab:checked {
+  background-color: var(--shobika-bg);
+  color: var(--shobika-accent);
+  border-bottom: 2px solid var(--shobika-accent);
+}
+
+/* Popover / Menu / PopoverMenu */
+popover,
+menu,
+popover-menu {
+  background-color: var(--shobika-bg-alt);
+  border: 1px solid var(--shobika-border);
+  border-radius: var(--shobika-radius-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  padding: 8px;
+}
+
+menuitem {
+  padding: 10px 16px;
+  border-radius: 6px;
+  transition: background-color 100ms ease;
+}
+
+menuitem:hover {
+  background-color: var(--shobika-bg-light);
+}
+
+menuitem:selected {
+  background-color: var(--shobika-accent);
+  color: var(--shobika-bg);
+}
+
+/* Separator in menus */
+menu separator {
+  background-color: var(--shobika-border);
+  margin: 4px 8px;
+}
+
+/* Scrollbar */
+scrollbar {
+  background-color: transparent;
+}
+
+scrollbar slider {
+  background-color: var(--shobika-bg-light);
+  border-radius: 6px;
+  min-width: 8px;
+  min-height: 8px;
+  margin: 4px;
+  transition: background-color 150ms ease;
+}
+
+scrollbar slider:hover {
+  background-color: var(--shobika-border);
+}
+
+scrollbar slider:active {
+  background-color: var(--shobika-accent);
+}
+
+/* Progressbar */
+progressbar {
+  background-color: var(--shobika-bg-light);
+  border-radius: var(--shobika-radius);
+  border: none;
+  overflow: hidden;
+}
+
+progressbar progress {
+  background: linear-gradient(90deg, var(--shobika-accent), #89d0fa);
+  border-radius: var(--shobika-radius);
+  transition: width 300ms ease;
+}
+
+/* Scale / Slider */
+scale {
+  background-color: transparent;
+}
+
+scale slider {
+  background-color: var(--shobika-accent);
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  box-shadow: 0 2px 10px rgba(137, 180, 250, 0.5);
+  transition: transform 150ms ease, background-color 150ms ease;
+}
+
+scale slider:hover {
+  background-color: var(--shobika-accent-hover);
+  transform: scale(1.15);
+}
+
+scale trough {
+  background-color: var(--shobika-bg-light);
+  border-radius: 4px;
+  height: 8px;
+}
+
+scale highlight {
+  background-color: var(--shobika-accent);
+  border-radius: 4px;
+  height: 8px;
+}
+
+/* Switch */
+switch {
+  background-color: var(--shobika-bg-light);
+  border-radius: 16px;
+  border: 2px solid var(--shobika-border);
+  min-width: 52px;
+  min-height: 28px;
+  transition: all 200ms ease;
+}
+
+switch:checked {
+  background-color: var(--shobika-accent);
+  border-color: var(--shobika-accent);
+}
+
+switch slider {
+  background-color: var(--shobika-fg);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 200ms ease;
+}
+
+switch:checked slider {
+  background-color: var(--shobika-bg);
+}
+
+/* Check / Radio */
+checkbutton,
+radiobutton {
+  color: var(--shobika-fg);
+}
+
+checkbutton check,
+radiobutton radio {
+  background-color: var(--shobika-bg);
+  border: 2px solid var(--shobika-border);
+  border-radius: 4px;
+  min-width: 22px;
+  min-height: 22px;
+  transition: all 150ms ease;
+}
+
+checkbutton check:checked,
+radiobutton radio:checked {
+  background-color: var(--shobika-accent);
+  border-color: var(--shobika-accent);
+}
+
+checkbutton check:hover,
+radiobutton radio:hover {
+  border-color: var(--shobika-accent);
+}
+
+/* Frame / Separator */
+frame {
+  border: 1px solid var(--shobika-border);
+  border-radius: var(--shobika-radius-lg);
+  background-color: var(--shobika-bg-alt);
+  padding: 16px;
+}
+
+separator {
+  background-color: var(--shobika-border);
+  min-width: 1px;
+  min-height: 1px;
+}
+
+/* Dialog */
+dialog {
+  background-color: var(--shobika-bg);
+  border: 1px solid var(--shobika-border);
+  border-radius: var(--shobika-radius-lg);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+}
+
+dialog titlebar {
+  background-color: var(--shobika-bg-alt);
+  border-bottom: 1px solid var(--shobika-border);
+  border-radius: var(--shobika-radius-lg) var(--shobika-radius-lg) 0 0;
+}
+
+/* Notification */
+notification {
+  background-color: var(--shobika-bg-alt);
+  border: 1px solid var(--shobika-border);
+  border-radius: var(--shobika-radius-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  padding: 16px;
+}
+
+/* Tooltip */
+tooltip {
+  background-color: var(--shobika-bg-alt);
+  border: 1px solid var(--shobika-border);
+  border-radius: var(--shobika-radius);
+  padding: 10px 14px;
+  color: var(--shobika-fg);
+  font-size: 13px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Calendar */
+calendar {
+  background-color: var(--shobika-bg-alt);
+  border: 1px solid var(--shobika-border);
+  border-radius: var(--shobika-radius-lg);
+}
+
+calendar:selected {
+  background-color: var(--shobika-accent);
+  color: var(--shobika-bg);
+  border-radius: 50%;
+}
+
+calendar:today {
+  border: 2px solid var(--shobika-accent);
+}
+
+/* Expander */
+expander {
+  color: var(--shobika-fg);
+}
+
+expander > arrow {
+  color: var(--shobika-fg-muted);
+  transition: transform 150ms ease;
+}
+
+expander:checked > arrow {
+  transform: rotate(90deg);
+  color: var(--shobika-accent);
+}
+
+/* Viewport / ScrolledWindow */
+viewport {
+  background-color: transparent;
+}
+
+scrolledwindow {
+  background-color: transparent;
+}
+
+/* Stack / StackSwitcher */
+stackswitcher {
+  background-color: var(--shobika-bg-alt);
+  border-radius: var(--shobika-radius);
+  padding: 4px;
+}
+
+stackswitcher button {
+  background-color: transparent;
+  border: none;
+  color: var(--shobika-fg-muted);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 150ms ease;
+}
+
+stackswitcher button:hover {
+  background-color: var(--shobika-bg-light);
+  color: var(--shobika-fg);
+}
+
+stackswitcher button:checked {
+  background-color: var(--shobika-accent);
+  color: var(--shobika-bg);
+}
+
+/* Selection */
+*::selection {
+  background-color: var(--shobika-accent);
+  color: var(--shobika-bg);
+}
+
+/* Focus */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--shobika-accent);
+  outline-offset: 2px;
+}
+
+/* Link */
+link {
+  color: var(--shobika-accent);
+  text-decoration: none;
+}
+
+link:hover {
+  text-decoration: underline;
+}
+
+/* Lock Screen */
+lock-screen {
+  background-color: var(--shobika-bg);
+}
+
+/* Overview */
+.overview {
+  background-color: var(--shobika-bg);
+}
+
+/* Workspace Switcher */
+workspace-switcher {
+  background-color: var(--shobika-bg-alt);
+  border-radius: var(--shobika-radius-lg);
+}
+
+/* App Grid */
+.app-grid {
+  background-color: transparent;
+}
+
+.app-grid-item {
+  background-color: var(--shobika-bg-light);
+  border-radius: var(--shobika-radius-lg);
+  padding: 16px;
+  transition: all 150ms ease;
+}
+
+.app-grid-item:hover {
+  background-color: var(--shobika-card-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.app-grid-item:selected {
+  background-color: var(--shobika-accent);
+  color: var(--shobika-bg);
+}
+
+/* Animations */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+* {
+  animation: fade-in 200ms ease;
+}
+
+popover,
+menu,
+tooltip,
+dialog {
+  animation: slide-up 200ms ease;
+}

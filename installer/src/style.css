@@ -1,0 +1,341 @@
+.main-window {
+    background-color: #1e1e2e;
+    color: #cdd6f4;
+}
+
+.header {
+    background-color: #181825;
+    border-bottom: 2px solid #313244;
+    padding: 16px 24px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #89b4fa;
+}
+
+.title {
+    font-size: 16px;
+    color: #a6adc8;
+}
+
+.step-switcher {
+    background-color: #181825;
+    border-bottom: 1px solid #313244;
+    padding: 8px 24px;
+}
+
+.step-switcher button {
+    background-color: transparent;
+    border: none;
+    color: #6c7086;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 150ms ease;
+}
+
+.step-switcher button:checked {
+    background-color: #313244;
+    color: #89b4fa;
+}
+
+.step-switcher button:hover {
+    background-color: #313244;
+    color: #cdd6f4;
+}
+
+.step-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #cdd6f4;
+    margin-bottom: 8px;
+}
+
+.step-subtitle {
+    font-size: 14px;
+    color: #a6adc8;
+    margin-bottom: 24px;
+}
+
+.field-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #a6adc8;
+    margin-bottom: 4px;
+}
+
+.entry, .combobox, .password-entry {
+    background-color: #181825;
+    border: 1px solid #313244;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #cdd6f4;
+    font-size: 14px;
+    min-height: 20px;
+    transition: border-color 150ms ease;
+}
+
+.entry:focus, .combobox:focus, .password-entry:focus {
+    border-color: #89b4fa;
+    outline: none;
+}
+
+.entry:hover, .combobox:hover, .password-entry:hover {
+    border-color: #45475a;
+}
+
+.language-list, .disk-list, .desktop-list {
+    background-color: transparent;
+    border: none;
+}
+
+.language-row, .disk-row, .desktop-row {
+    background-color: #181825;
+    border: 1px solid #313244;
+    border-radius: 12px;
+    margin: 6px 0;
+    transition: all 150ms ease;
+}
+
+.language-row:hover, .disk-row:hover, .desktop-row:hover {
+    background-color: #1e1e2e;
+    border-color: #45475a;
+}
+
+.language-row:selected, .disk-row:selected, .desktop-row:selected {
+    background-color: #1e2d3d;
+    border-color: #89b4fa;
+}
+
+.flag, .desktop-icon, .disk-icon {
+    font-size: 28px;
+    margin-right: 8px;
+}
+
+.language-name {
+    font-size: 15px;
+    color: #cdd6f4;
+}
+
+.disk-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #cdd6f4;
+}
+
+.disk-size {
+    font-size: 12px;
+    color: #a6adc8;
+}
+
+.desktop-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #cdd6f4;
+}
+
+.desktop-description {
+    font-size: 12px;
+    color: #a6adc8;
+    line-height: 1.4;
+}
+
+.warning {
+    background-color: #3d2b2b;
+    border: 1px solid #f38ba8;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #f38ba8;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.check-button {
+    min-width: 24px;
+    min-height: 24px;
+    background-color: #181825;
+    border: 2px solid #313244;
+    border-radius: 6px;
+    transition: all 150ms ease;
+}
+
+.check-button.active {
+    background-color: #89b4fa;
+    border-color: #89b4fa;
+}
+
+.check-button:hover {
+    border-color: #89b4fa;
+}
+
+.check-button:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231e1e2e'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E");
+}
+
+.navigation {
+    background-color: #181825;
+    border-top: 1px solid #313244;
+    padding: 16px 24px;
+    justify-content: flex-end;
+}
+
+.nav-button {
+    background-color: #313244;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    color: #cdd6f4;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 100px;
+    transition: all 150ms ease;
+}
+
+.nav-button:hover {
+    background-color: #45475a;
+}
+
+.nav-button.suggested-action {
+    background-color: #89b4fa;
+    color: #1e1e2e;
+}
+
+.nav-button.suggested-action:hover {
+    background-color: #7aa2f7;
+}
+
+.install-status {
+    font-size: 16px;
+    color: #cdd6f4;
+    margin-bottom: 16px;
+}
+
+.install-status.error {
+    color: #f38ba8;
+}
+
+.install-progress {
+    min-height: 16px;
+    border-radius: 8px;
+    background-color: #313244;
+}
+
+.install-progress progress {
+    background-color: #89b4fa;
+    border-radius: 8px;
+}
+
+.install-details {
+    font-size: 12px;
+    color: #a6adc8;
+    margin-top: 8px;
+}
+
+.install-spinner {
+    margin-top: 16px;
+}
+
+.install-button {
+    background-color: #a6e3a1;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 48px;
+    color: #1e1e2e;
+    font-size: 16px;
+    font-weight: 600;
+    min-width: 200px;
+    transition: all 150ms ease;
+}
+
+.install-button:hover {
+    background-color: #94d39b;
+}
+
+.install-button:disabled {
+    background-color: #313244;
+    color: #6c7086;
+}
+
+/* Wallpaper step */
+.wallpaper-list {
+    background-color: transparent;
+    border: none;
+}
+
+.wallpaper-row {
+    background-color: #181825;
+    border: 1px solid #313244;
+    border-radius: 12px;
+    margin: 4px 0;
+    transition: all 150ms ease;
+}
+
+.wallpaper-row:hover {
+    background-color: #1e1e2e;
+    border-color: #45475a;
+}
+
+.wallpaper-row:selected {
+    background-color: #1e2d3d;
+    border-color: #89b4fa;
+}
+
+.wallpaper-icon {
+    font-size: 28px;
+    margin-right: 8px;
+}
+
+.wallpaper-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #cdd6f4;
+}
+
+.wallpaper-description {
+    font-size: 12px;
+    color: #a6adc8;
+    line-height: 1.4;
+}
+
+.default-badge {
+    background-color: #89b4fa;
+    color: #1e1e2e;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* Extras checkboxes */
+.extras-check {
+    margin: 4px 0;
+}
+
+.extras-check label {
+    font-size: 14px;
+    color: #cdd6f4;
+}
+
+checkbutton {
+    color: #cdd6f4;
+}
+
+checkbutton indicator {
+    background-color: #181825;
+    border: 2px solid #313244;
+    border-radius: 4px;
+    min-width: 20px;
+    min-height: 20px;
+}
+
+checkbutton indicator:checked {
+    background-color: #89b4fa;
+    border-color: #89b4fa;
+}
+
+checkbutton:hover indicator {
+    border-color: #89b4fa;
+}

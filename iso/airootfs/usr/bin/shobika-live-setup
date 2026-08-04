@@ -1,0 +1,52 @@
+#!/bin/bash
+# ShobikaOs live user setup
+# This runs in the live ISO to create the liveuser for auto-login
+
+set -e
+
+# Create liveuser
+useradd -m -G wheel,video,audio,storage,network -s /bin/bash liveuser
+echo "liveuser:liveuser" | chpasswd
+echo "root:shobikaos" | chpasswd
+
+# Enable sudo for wheel
+echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/99-wheel
+
+# Enable services
+systemctl enable NetworkManager
+systemctl enable lightdm
+systemctl enable shobika-installer.service
+
+# Set up auto-login for liveuser
+mkdir -p /etc/lightdm
+cat > /etc/lightdm/lightdm.conf << 'LIGHTDM_EOF'
+[LightDM]
+minimum-vt=1
+run-directory=/run/lightdm
+
+[Seat:*]
+type=local
+pam-service=lightdm
+pam-autologin-service=lightdm-autologin
+greeter-session=lightdm-gtk-greeter
+autologin-user=liveuser
+autologin-user-timeout=0
+session-wrapper=/etc/lightdm/Xsession
+xserver-command=X -core
+LIGHTDM_EOF
+
+# Greeter config
+cat > /etc/lightdm/lightdm-gtk-greeter.conf << 'GREETER_EOF'
+[greeter]
+background=/usr/share/backgrounds/shobikaos-wallpaper.png
+theme-name=Arc-Dark
+icon-theme-name=Papirus-Dark
+font-name=Noto Sans 10
+xft-antialias=true
+xft-hintstyle=hintslight
+xft-rgba=rgb
+show-indicators=~host;~spacer;~clock;~spacer;~session;~a11y;~power
+clock-format=%H:%M
+GREETER_EOF
+
+echo "Live user configured"

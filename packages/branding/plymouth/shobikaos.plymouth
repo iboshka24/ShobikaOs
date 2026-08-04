@@ -1,0 +1,11 @@
+# ShobikaOs Plymouth Theme
+# Install to /usr/share/plymouth/themes/shobikaos/
+
+[Plymouth Theme]
+Name=ShobikaOs
+Description=ShobikaOs Boot Splash Theme
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/shobikaos
+ScriptFile=/usr/share/plymouth/themes/shobikaos/shobikaos.script

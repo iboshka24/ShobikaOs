@@ -1,0 +1,153 @@
+// ShobikaOs Plymouth Script
+// Install to /usr/share/plymouth/themes/shobikaos/shobikaos.script
+
+var bg_color = [0.12, 0.12, 0.18];      // #1e1e2e
+var accent_color = [0.54, 0.71, 0.98];   // #89b4fa
+var text_color = [0.80, 0.84, 0.96];     // #cdd6f4
+var muted_color = [0.65, 0.68, 0.80];    // #a6adc8
+
+var logo_image = Image("logo.png");
+var background_image = Image("background.png");
+
+var window_width = Window.GetWidth();
+var window_height = Window.GetHeight();
+
+var logo_width = logo_image.GetWidth();
+var logo_height = logo_image.GetHeight();
+
+var logo_x = (window_width - logo_width) / 2;
+var logo_y = (window_height - logo_height) / 2 - 80;
+
+var progress_bar_width = window_width * 0.6;
+var progress_bar_height = 6;
+var progress_bar_x = (window_width - progress_bar_width) / 2;
+var progress_bar_y = logo_y + logo_height + 60;
+
+var text_y = progress_bar_y + progress_bar_height + 30;
+var subtitle_y = text_y + 40;
+
+var animation_time = 0;
+var pulse_direction = 1;
+var pulse_alpha = 1.0;
+
+// Background sprite
+var bg_sprite = Sprite();
+bg_sprite.SetImage(background_image);
+bg_sprite.SetPosition(0, 0, -100);
+bg_sprite.SetSize(window_width, window_height);
+
+// Logo sprite
+var logo_sprite = Sprite();
+logo_sprite.SetImage(logo_image);
+logo_sprite.SetPosition(logo_x, logo_y, 100);
+
+// Progress bar background
+var progress_bg = Sprite();
+progress_bg.SetPosition(progress_bar_x, progress_bar_y, 50);
+progress_bar.SetSize(progress_bar_width, progress_bar_height);
+
+// Progress bar fill
+var progress_fill = Sprite();
+progress_fill.SetPosition(progress_bar_x, progress_bar_y, 51);
+
+// Text sprites
+var title_sprite = Sprite();
+var subtitle_sprite = Sprite();
+
+fun init() {
+    // Create progress bar background
+    var pb_bg = Image(progress_bar_width, progress_bar_height);
+    pb_bg.Fill(bg_color[0], bg_color[1], bg_color[2], 1.0);
+    // Rounded corners
+    for (i = 0; i < progress_bar_height; i++) {
+        for (j = 0; j < progress_bar_width; j++) {
+            var dx = j - progress_bar_width/2;
+            var dy = i - progress_bar_height/2;
+            if (dx*dx + dy*dy < (progress_bar_height/2)*(progress_bar_height/2)) {
+                // Inside rounded area
+            }
+        }
+    }
+    progress_bg.SetImage(pb_bg);
+
+    // Title text
+    var title_img = Image.Text("SHOBIKAOS", "JetBrains Mono", 48, text_color[0], text_color[1], text_color[2]);
+    title_sprite.SetImage(title_img);
+    title_sprite.SetPosition((window_width - title_img.GetWidth()) / 2, text_y, 52);
+
+    // Subtitle text
+    var subtitle_img = Image.Text("Arch-based Linux Distribution", "Noto Sans", 18, muted_color[0], muted_color[1], muted_color[2]);
+    subtitle_sprite.SetImage(subtitle_img);
+    subtitle_sprite.SetPosition((window_width - subtitle_img.GetWidth()) / 2, subtitle_y, 52);
+}
+
+fun update_progress(duration, progress) {
+    animation_time += duration;
+    
+    // Pulse animation for loading
+    pulse_alpha += pulse_direction * duration * 2;
+    if (pulse_alpha >= 1.0) { pulse_alpha = 1.0; pulse_direction = -1; }
+    if (pulse_alpha <= 0.3) { pulse_alpha = 0.3; pulse_direction = 1; }
+
+    // Update progress bar fill
+    var fill_width = progress_bar_width * progress;
+    var fill_img = Image(fill_width, progress_bar_height);
+    
+    // Gradient fill
+    for (i = 0; i < progress_bar_height; i++) {
+        for (j = 0; j < fill_width; j++) {
+            var t = j / fill_width;
+            var r = accent_color[0] * (1 - t * 0.2) + accent_color[0] * 0.8 * t;
+            var g = accent_color[1] * (1 - t * 0.1) + accent_color[1] * 0.9 * t;
+            var b = accent_color[2];
+            fill_img.SetPixel(j, i, r, g, b, 1.0);
+        }
+    }
+    
+    // Rounded ends
+    var radius = progress_bar_height / 2;
+    for (i = 0; i < progress_bar_height; i++) {
+        for (j = 0; j < radius; j++) {
+            var dx = j - radius;
+            var dy = i - radius;
+            if (dx*dx + dy*dy > radius*radius) {
+                fill_img.SetPixel(j, i, 0, 0, 0, 0);
+            }
+            dx = (fill_width - radius) - j;
+            if (dx*dx + dy*dy > radius*radius) {
+                fill_img.SetPixel(j, i, 0, 0, 0, 0);
+            }
+        }
+    }
+    
+    progress_fill.SetImage(fill_img);
+    
+    // Pulse the logo opacity slightly
+    logo_sprite.SetOpacity(0.9 + 0.1 * Math.Sin(animation_time * 3));
+}
+
+fun display_message(message) {
+    // Could add a message sprite here
+}
+
+fun display_normal(message) {
+    display_message(message);
+}
+
+fun display_warning(message) {
+    display_message(message);
+}
+
+fun display_error(message) {
+    display_message(message);
+}
+
+fun display_debug(message) {
+    display_message(message);
+}
+
+fun quit() {
+    // Cleanup
+}
+
+init();

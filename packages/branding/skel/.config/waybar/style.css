@@ -1,0 +1,150 @@
+/* ShobikaOs Waybar Styles */
+/* ~/.config/waybar/style.css */
+
+* {
+    font-family: "JetBrains Mono Nerd Font", "Noto Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+window#waybar {
+    background-color: rgba(30, 30, 46, 0.95);
+    color: #cdd6f4;
+    border-top: 2px solid #89b4fa;
+    border-radius: 0;
+}
+
+#workspaces {
+    padding: 0 8px;
+    margin: 4px 0;
+}
+
+#workspaces button {
+    padding: 0 10px;
+    color: #a6adc8;
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+    transition: all 150ms ease;
+    min-width: 28px;
+}
+
+#workspaces button:hover {
+    background-color: #313244;
+    color: #cdd6f4;
+}
+
+#workspaces button.active {
+    background-color: #89b4fa;
+    color: #1e1e2e;
+    font-weight: 700;
+}
+
+#workspaces button.urgent {
+    background-color: #f38ba8;
+    color: #1e1e2e;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+#window {
+    padding: 0 12px;
+    color: #a6adc8;
+    margin: 4px 8px;
+}
+
+#clock,
+#battery,
+#pulseaudio,
+#network,
+#tray,
+#custom-updates,
+#custom-power,
+#custom-separator {
+    padding: 0 12px;
+    margin: 4px 4px;
+    color: #cdd6f4;
+}
+
+#clock {
+    font-weight: 600;
+    font-family: "JetBrains Mono Nerd Font";
+}
+
+#battery {
+    font-family: "JetBrains Mono Nerd Font";
+}
+
+#battery.warning {
+    color: #f9e2af;
+}
+
+#battery.critical {
+    color: #f38ba8;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+#pulseaudio {
+    font-family: "JetBrains Mono Nerd Font";
+}
+
+#network {
+    font-family: "JetBrains Mono Nerd Font";
+}
+
+#network.disconnected {
+    color: #f38ba8;
+}
+
+#tray {
+    padding: 0 8px;
+}
+
+#custom-updates {
+    color: #a6e3a1;
+}
+
+#custom-updates.updated {
+    color: #a6adc8;
+}
+
+#custom-power {
+    font-size: 18px;
+    padding: 0 16px;
+}
+
+#custom-power:hover {
+    background-color: #313244;
+    border-radius: 6px;
+    color: #f38ba8;
+}
+
+#custom-separator {
+    color: #45475a;
+    margin: 4px 8px;
+}
+
+tooltip {
+    background-color: #181825;
+    border: 1px solid #313244;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #cdd6f4;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+tooltip label {
+    color: #cdd6f4;
+}

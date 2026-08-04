@@ -1,0 +1,8 @@
+target/
+out/
+*.iso
+*.img
+*.tar.gz
+*.pkg.tar.zst
+/tmp/
+.agents/

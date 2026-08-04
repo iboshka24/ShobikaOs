@@ -1,0 +1,33 @@
+# Maintainer: ShobikaOs Team <team@shobikaos.org>
+pkgname=shobikaos-config
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="ShobikaOs default configuration (pacman.conf, skel, locale)"
+arch=('any')
+license=('MIT')
+depends=('shobikaos-branding')
+
+package() {
+    # Default user skeleton is provided by shobikaos-branding
+    
+    # Locale
+    echo "en_US.UTF-8 UTF-8" > "$pkgdir/etc/locale.gen"
+    echo "ru_RU.UTF-8 UTF-8" >> "$pkgdir/etc/locale.gen"
+    
+    # Hostname
+    echo "shobikaos" > "$pkgdir/etc/hostname"
+    
+    # Pacman hook for GRUB theme update
+    install -dm755 "$pkgdir/etc/pacman.d/hooks"
+    cat > "$pkgdir/etc/pacman.d/hooks/99-grub-theme.hook" << 'EOF'
+[Trigger]
+Type = Package
+Operation = Upgrade
+Target = grub
+
+[Action]
+Description = Updating GRUB theme...
+When = PostTransaction
+Exec = /usr/bin/shobikaos-install-grub-theme
+EOF
+}

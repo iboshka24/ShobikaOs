@@ -1,0 +1,12 @@
+[Unit]
+Description=ShobikaOs Live Setup
+Before=lightdm.service
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/shobika-live-setup
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

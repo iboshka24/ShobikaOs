@@ -1,0 +1,114 @@
+// ShobikaOs Waybar Config
+// ~/.config/waybar/config.jsonc
+
+{
+    "layer": "top",
+    "position": "bottom",
+    "height": 36,
+    "spacing": 4,
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["hyprland/window", "custom/separator", "clock"],
+    "modules-right": ["custom/updates", "tray", "network", "pulseaudio", "battery", "custom/power"],
+    
+    "hyprland/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "format": "{icon}",
+        "format-icons": {
+            "1": "1",
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5",
+            "6": "6",
+            "7": "7",
+            "8": "8",
+            "9": "9",
+            "10": "10",
+            "urgent": "!",
+            "default": "●"
+        },
+        "on-click": "activate",
+        "tooltip": true
+    },
+    
+    "hyprland/window": {
+        "format": "{}",
+        "max-length": 50,
+        "tooltip": true
+    },
+    
+    "custom/separator": {
+        "format": "│",
+        "color": "#45475a"
+    },
+    
+    "clock": {
+        "format": "{}",
+        "format-alt": "{:%Y-%m-%d %H:%M:%S}",
+        "tooltip-format": "{:%A, %B %d, %Y}",
+        "format-icons": [],
+        "interval": 1000
+    },
+    
+    "custom/updates": {
+        "format": "{}",
+        "format-icons": ["󰏗", "󰏗"],
+        "exec": "checkupdates 2>/dev/null | wc -l",
+        "interval": 3600,
+        "tooltip": true,
+        "on-click": "foot -e sudo pacman -Syu"
+    },
+    
+    "tray": {
+        "icon-size": 16,
+        "spacing": 8,
+        "icon-theme": "Papirus-Dark"
+    },
+    
+    "network": {
+        "format-wifi": "{} {}%",
+        "format-ethernet": "{}",
+        "format-disconnected": "󰖪 Offline",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
+        "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"]
+    },
+    
+    "pulseaudio": {
+        "format": "{} {}%",
+        "format-bluetooth": "{} {}%",
+        "format-muted": "󰝟 Muted",
+        "format-source": "{} {}%",
+        "format-source-muted": "󰍭 Muted",
+        "format-icons": {
+            "headphone": "󰋋",
+            "hands-free": "󰋋",
+            "headset": "󰋋",
+            "phone": "󰋋",
+            "portable": "󰋋",
+            "car": "󰋋",
+            "default": ["󰕿", "󰖀", "󰕾"]
+        },
+        "on-click": "pavucontrol",
+        "scroll-step": 5
+    },
+    
+    "battery": {
+        "format": "{} {}%",
+        "format-charging": "{} {}%",
+        "format-plugged": "{} {}%",
+        "format-alt": "{time} {}%",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "on-click": "foot -e btop"
+    },
+    
+    "custom/power": {
+        "format": "󰐥",
+        "tooltip": "Power Menu",
+        "on-click": "wofi --show power"
+    }
+}

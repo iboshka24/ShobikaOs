@@ -1,0 +1,116 @@
+# ShobikaOs - packages for live ISO with graphical installer + branding
+base
+linux
+linux-firmware
+base-devel
+git
+sudo
+which
+nano
+vim
+
+# Boot
+grub
+efibootmgr
+os-prober
+memtest86+
+
+# Filesystem
+btrfs-progs
+dosfstools
+e2fsprogs
+ntfs-3g
+
+# Graphical installer dependencies (GTK4 + Rust)
+gtk4
+libadwaita
+libpanel
+libhandy
+cairo
+pango
+gdk-pixbuf2
+glib2
+librsvg
+graphene
+gobject-introspection
+rust
+cargo
+pkgconf
+
+# Display manager for live session
+lightdm
+lightdm-gtk-greeter
+lightdm-webkit2-greeter
+
+# X11/Wayland
+xorg-server
+xorg-xinit
+xorg-xrandr
+xorg-xset
+wayland
+mesa
+vulkan-intel
+vulkan-radeon
+
+# Basic live session DE
+cinnamon
+cinnamon-terminal
+nemo
+file-roller
+eog
+evince
+gnome-calculator
+
+# Network
+networkmanager
+network-manager-applet
+dhcpcd
+
+# Installer tools
+arch-install-scripts
+reflector
+pacman-contrib
+
+# Fonts
+noto-fonts
+noto-fonts-emoji
+noto-fonts-cjk
+ttf-jetbrains-mono-nerd
+ttf-font-awesome
+
+# Branding dependencies
+fastfetch
+plymouth
+papirus-icon-theme
+adwaita-icon-theme
+
+# Misc
+man-db
+man-pages
+bash-completion
+wget
+curl
+unzip
+p7zip
+htop
+btop
+
+# Audio (PipeWire)
+pipewire
+pipewire-pulse
+pipewire-alsa
+wireplumber
+
+# Hardware detection
+pciutils
+usbutils
+dmidecode
+lshw
+
+# Modern CLI tools
+fzf
+ripgrep
+fd
+bat
+eza
+zoxide

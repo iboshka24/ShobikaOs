@@ -1,0 +1,91 @@
+# ShobikaOs GRUB Theme
+# Install to /boot/grub/themes/shobikaos/
+
+# Colors
+title-color: "#cdd6f4"
+title-font: "JetBrains Mono Bold 32"
+message-color: "#a6adc8"
+message-font: "Noto Sans Regular 16"
+terminal-border: "#313244"
+terminal-box: "#181825@100"
+terminal-font: "JetBrains Mono Regular 14"
+
+# Boot menu
++ boot_menu {
+  left = 10%
+  top = 20%
+  width = 80%
+  height = 60%
+  item_font = "Noto Sans Regular 18"
+  item_color = "#cdd6f4"
+  selected_item_color = "#1e1e2e"
+  selected_item_font = "Noto Sans Bold 18"
+  item_height = 40
+  item_padding = 16
+  item_spacing = 8
+  scrollbar = true
+  scrollbar_thumb = "#89b4fa"
+  scrollbar_track = "#313244"
+}
+
+# Progress bar
++ progress_bar {
+  id = "__timeout__"
+  left = 10%
+  top = 85%
+  width = 80%
+  height = 8
+  bg_color = "#313244"
+  fg_color = "#89b4fa"
+  border_color = "#45475a"
+  border_width = 1
+  text = "@TIMEOUT_NOTIFICATION_LONG@"
+  text_color = "#a6adc8"
+  font = "Noto Sans Regular 14"
+  text_align = "center"
+}
+
+# Background image
++ image {
+  left = 0
+  top = 0
+  width = 100%
+  height = 100%
+  file = "background.png"
+}
+
+# Title
++ label {
+  left = 10%
+  top = 5%
+  width = 80%
+  height = 60
+  text = "ShobikaOs"
+  color = "#89b4fa"
+  font = "JetBrains Mono Bold 48"
+  align = "center"
+}
+
+# Subtitle
++ label {
+  left = 10%
+  top = 12%
+  width = 80%
+  height = 40
+  text = "Arch-based Linux Distribution"
+  color = "#a6adc8"
+  font = "Noto Sans Regular 18"
+  align = "center"
+}
+
+# Help text
++ label {
+  left = 10%
+  top = 90%
+  width = 80%
+  height = 30
+  text = "Use ↑/↓ to select, Enter to boot, 'e' to edit, 'c' for command line"
+  color = "#6c7086"
+  font = "Noto Sans Regular 13"
+  align = "center"
+}

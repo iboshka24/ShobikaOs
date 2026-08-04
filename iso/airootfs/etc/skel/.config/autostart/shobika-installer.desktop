@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=ShobikaOs Installer
+Comment=Install ShobikaOs to disk
+Exec=shobika-installer
+Icon=system-software-install
+Terminal=false
+Categories=System;Settings;
+StartupNotify=true
+X-GNOME-Autostart-enabled=true

@@ -1,0 +1,19 @@
+# Maintainer: ShobikaOs <shobikaos@example.com>
+pkgname=shobikaos-installer
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="ShobikaOs TUI installer (Rust binary)"
+arch=('x86_64')
+license=('MIT')
+makedepends=('rust' 'cargo')
+source=('shobika-installer::git+https://github.com/shobikaos/ShobikaOs.git#branch=main')
+
+build() {
+    cd "$srcdir/ShobikaOs/installer"
+    cargo build --release
+}
+
+package() {
+    install -Dm755 "$srcdir/ShobikaOs/installer/target/release/shobika-installer" \
+        "$pkgdir/usr/bin/shobika-installer"
+}

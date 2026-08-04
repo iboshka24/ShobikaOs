@@ -1,0 +1,24 @@
+#!/bin/bash
+# ShobikaOs - Post-installation script
+# Called by Calamares shellprocess module
+
+DE_CHOICE="${PACKAGECHOOSER_CHOICE:-cinnamon}"
+
+echo "[ShobikaOs] Running post-install for: $DE_CHOICE"
+
+# Copy DE scripts to target
+mkdir -p /usr/share/shobikaos-scripts/de
+mkdir -p /usr/share/shobikaos-scripts/customization
+
+cp /run/shobikaos/de/*.sh /usr/share/shobikaos-scripts/de/
+cp /run/shobikaos/customization/*.sh /usr/share/shobikaos-scripts/customization/
+
+# Run DE installation
+chmod +x /usr/share/shobikaos-scripts/de/${DE_CHOICE}.sh
+/usr/share/shobikaos-scripts/de/${DE_CHOICE}.sh
+
+# Run customization
+chmod +x /usr/share/shobikaos-scripts/customization/${DE_CHOICE}.sh
+/usr/share/shobikaos-scripts/customization/${DE_CHOICE}.sh
+
+echo "[ShobikaOs] Post-installation complete!"

@@ -1,0 +1,130 @@
+# Maintainer: ShobikaOs Team <team@shobikaos.org>
+pkgname=shobikaos-branding
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="ShobikaOs branding package (themes, wallpapers, configs, fastfetch, GRUB, SDDM, Plymouth)"
+arch=('any')
+license=('MIT')
+url="https://github.com/shobikaos/ShobikaOs"
+depends=(
+    'fastfetch'
+    'gtk4'
+    'gtk3'
+    'adwaita-icon-theme'
+    'papirus-icon-theme'
+    'noto-fonts'
+    'noto-fonts-emoji'
+    'ttf-jetbrains-mono-nerd'
+    'plymouth'
+    'grub'
+    'sddm'
+    'lightdm-webkit2-greeter'
+    'waybar'
+    'wofi'
+    'foot'
+    'hyprland'
+    'hyprpaper'
+    'hyprlock'
+    'hypridle'
+    'dunst'
+)
+makedepends=('git')
+optdepends=(
+    'zsh: Zsh shell'
+    'oh-my-zsh: Zsh framework'
+    'powerlevel10k: Zsh theme'
+    'starship: Cross-shell prompt'
+    'fnm: Node version manager'
+    'btop: System monitor'
+    'cliphist: Clipboard history for Wayland'
+)
+source=(
+    "git+https://github.com/shobikaos/ShobikaOs.git#branch=main"
+)
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir/ShobikaOs/packages/branding"
+    
+    # GTK Themes
+    install -dm755 "$pkgdir/usr/share/themes/ShobikaOs-Dark/gtk-3.0"
+    install -dm755 "$pkgdir/usr/share/themes/ShobikaOs-Dark/gtk-4.0"
+    install -m644 themes/gtk-3.0/gtk.css "$pkgdir/usr/share/themes/ShobikaOs-Dark/gtk-3.0/"
+    install -m644 themes/gtk-4.0/gtk.css "$pkgdir/usr/share/themes/ShobikaOs-Dark/gtk-4.0/"
+    install -m644 themes/index.theme "$pkgdir/usr/share/themes/ShobikaOs-Dark/"
+    
+    # Wallpapers
+    install -dm755 "$pkgdir/usr/share/backgrounds"
+    install -m644 wallpapers/shobikaos-wallpaper.svg "$pkgdir/usr/share/backgrounds/"
+    # Install all PNG wallpapers
+    for f in wallpapers/*.png; do
+        install -m644 "$f" "$pkgdir/usr/share/backgrounds/"
+    done
+    # Default wallpaper symlink (aurora is default)
+    ln -sf shobikaos-aurora.png "$pkgdir/usr/share/backgrounds/shobikaos-wallpaper.png"
+    
+    # GRUB Theme
+    install -dm755 "$pkgdir/usr/share/grub/themes/shobikaos"
+    install -m644 grub/theme.txt "$pkgdir/usr/share/grub/themes/shobikaos/"
+    install -m755 grub/install-grub-theme.sh "$pkgdir/usr/bin/shobikaos-install-grub-theme"
+    
+    # SDDM Theme
+    install -dm755 "$pkgdir/usr/share/sddm/themes/shobikaos"
+    install -m644 sddm/theme.conf "$pkgdir/usr/share/sddm/themes/shobikaos/"
+    install -m644 sddm/Main.qml "$pkgdir/usr/share/sddm/themes/shobikaos/"
+    # Copy background
+    cp "$pkgdir/usr/share/backgrounds/shobikaos-wallpaper.png" "$pkgdir/usr/share/sddm/themes/shobikaos/background.png"
+    
+    # LightDM Webkit2 Theme
+    install -dm755 "$pkgdir/usr/share/lightdm-webkit/themes/shobikaos"
+    install -m644 lightdm/lightdm-webkit2-greeter.conf "$pkgdir/usr/share/lightdm-webkit/themes/shobikaos/"
+    
+    # Plymouth Theme
+    install -dm755 "$pkgdir/usr/share/plymouth/themes/shobikaos"
+    install -m644 plymouth/shobikaos.plymouth "$pkgdir/usr/share/plymouth/themes/shobikaos/"
+    install -m644 plymouth/shobikaos.script "$pkgdir/usr/share/plymouth/themes/shobikaos/"
+    # Copy background for Plymouth
+    cp "$pkgdir/usr/share/backgrounds/shobikaos-wallpaper.png" "$pkgdir/usr/share/plymouth/themes/shobikaos/background.png"
+    # Generate logo (simplified)
+    cat > "$pkgdir/usr/share/plymouth/themes/shobikaos/logo.png" << 'EOF'
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==
+EOF
+    base64 -d "$pkgdir/usr/share/plymouth/themes/shobikaos/logo.png" > "$pkgdir/usr/share/plymouth/themes/shobikaos/logo.png.tmp" 2>/dev/null && mv "$pkgdir/usr/share/plymouth/themes/shobikaos/logo.png.tmp" "$pkgdir/usr/share/plymouth/themes/shobikaos/logo.png" || true
+    
+    # SKEL configs
+    install -dm755 "$pkgdir/etc/skel"
+    install -dm755 "$pkgdir/etc/skel/.config/fastfetch"
+    install -dm755 "$pkgdir/etc/skel/.config/gtk-3.0"
+    install -dm755 "$pkgdir/etc/skel/.config/gtk-4.0"
+    install -dm755 "$pkgdir/etc/skel/.config/hypr"
+    install -dm755 "$pkgdir/etc/skel/.config/waybar"
+    install -dm755 "$pkgdir/etc/skel/.config/wofi"
+    install -dm755 "$pkgdir/etc/skel/.config/foot"
+    install -dm755 "$pkgdir/etc/skel/etc"
+    
+    install -m644 skel/.bashrc "$pkgdir/etc/skel/"
+    install -m644 skel/.zshrc "$pkgdir/etc/skel/"
+    install -m644 skel/.config/fastfetch/config.jsonc "$pkgdir/etc/skel/.config/fastfetch/"
+    install -m644 skel/.config/gtk-3.0/settings.ini "$pkgdir/etc/skel/.config/gtk-3.0/"
+    install -m644 skel/.config/gtk-4.0/settings.ini "$pkgdir/etc/skel/.config/gtk-4.0/"
+    install -m644 skel/.config/hypr/hyprland.conf "$pkgdir/etc/skel/.config/hypr/"
+    install -m644 skel/.config/hypr/hyprpaper.conf "$pkgdir/etc/skel/.config/hypr/"
+    install -m644 skel/.config/waybar/config.jsonc "$pkgdir/etc/skel/.config/waybar/"
+    install -m644 skel/.config/waybar/style.css "$pkgdir/etc/skel/.config/waybar/"
+    install -m644 skel/.config/wofi/config "$pkgdir/etc/skel/.config/wofi/"
+    install -m644 skel/.config/wofi/style.css "$pkgdir/etc/skel/.config/wofi/"
+    install -m644 skel/.config/foot/foot.ini "$pkgdir/etc/skel/.config/foot/"
+    install -m644 skel/etc/issue "$pkgdir/etc/skel/etc/"
+    install -m644 skel/etc/motd "$pkgdir/etc/skel/etc/"
+    install -m644 skel/etc/os-release "$pkgdir/etc/os-release"
+    
+    # System-wide configs
+    install -dm755 "$pkgdir/etc"
+    install -m644 skel/etc/os-release "$pkgdir/etc/os-release"
+    
+    # MOTD
+    install -m644 skel/etc/motd "$pkgdir/etc/motd"
+    
+    # Issue
+    install -m644 skel/etc/issue "$pkgdir/etc/issue"
+}

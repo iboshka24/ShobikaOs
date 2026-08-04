@@ -1,0 +1,12 @@
+NAME="ShobikaOs"
+PRETTY_NAME="ShobikaOs"
+ID=shobikaos
+ID_LIKE=arch
+BUILD_ID=rolling
+ANSI_COLOR="38;2;137;180;250"
+HOME_URL="https://github.com/shobikaos/ShobikaOs"
+DOCUMENTATION_URL="https://github.com/shobikaos/ShobikaOs/wiki"
+SUPPORT_URL="https://github.com/shobikaos/ShobikaOs/issues"
+BUG_REPORT_URL="https://github.com/shobikaos/ShobikaOs/issues"
+PRIVACY_POLICY_URL="https://github.com/shobikaos/ShobikaOs"
+LOGO=shobikaos

@@ -210,8 +210,8 @@ impl InstallStep {
 }
 
 impl Step for InstallStep {
-    fn widget(&self) -> &gtk4::Widget {
-        self.container.upcast_ref()
+    fn widget(&self) -> gtk4::Widget {
+        self.container.clone().upcast()
     }
 
     fn name(&self) -> &str {

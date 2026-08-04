@@ -20,7 +20,7 @@ use std::sync::{Arc, Mutex};
 use crate::installer::Installer;
 
 pub trait Step: Send + Sync {
-    fn widget(&self) -> &Widget;
+    fn widget(&self) -> Widget;
     fn name(&self) -> &str;
     fn validate(&self) -> bool;
     fn apply(&self) -> anyhow::Result<()>;

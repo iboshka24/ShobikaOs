@@ -14,7 +14,6 @@ vim
 # --- Archiso live boot (CRITICAL) ---
 mkinitcpio
 mkinitcpio-archiso
-mkinitcpio-nfs-utils
 syslinux
 memtest86+
 memtest86+-efi
@@ -98,8 +97,7 @@ pacman-contrib
 noto-fonts
 noto-fonts-emoji
 noto-fonts-cjk
-ttf-jetbrains-mono-nerd
-ttf-font-awesome
+ttf-jetbrains-mono
 
 # --- Branding & Themes ---
 fastfetch

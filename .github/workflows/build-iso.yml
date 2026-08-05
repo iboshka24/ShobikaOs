@@ -57,6 +57,12 @@ jobs:
         run: |
           mkdir -p out
           rm -rf /tmp/shobika_work
+          
+          # Create loop devices for losetup inside privileged Docker container
+          for i in $(seq 0 15); do
+            mknod -m 0660 /dev/loop$i b 7 $i 2>/dev/null || true
+          done
+          
           mkarchiso -v -w /tmp/shobika_work -o out iso/
 
       - name: Upload ISO Artifact

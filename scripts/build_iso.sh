@@ -9,8 +9,8 @@ sed -i 's/LocalFileSigLevel.*/LocalFileSigLevel = Never/g' /etc/pacman.conf
 
 echo '=== 2. Install Build Dependencies ==='
 pacman -Sy --noconfirm
-pacman -S --noconfirm --needed base-devel archiso grub mtools libisoburn squashfs-tools \
-  gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 graphene
+pacman -S --noconfirm --needed gcc make binutils patch archiso grub mtools libisoburn squashfs-tools \
+  pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 graphene
 
 echo '=== 3. Compile Native GTK4 C Installer Binary ==='
 mkdir -p iso/airootfs/usr/bin

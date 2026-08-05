@@ -4,7 +4,11 @@ base
 linux
 linux-firmware
 linux-headers
-base-devel
+gcc
+make
+binutils
+patch
+pkgconf
 git
 sudo
 which
@@ -40,7 +44,6 @@ glib2
 librsvg
 graphene
 gobject-introspection
-pkgconf
 
 # --- Display manager for live session ---
 lightdm

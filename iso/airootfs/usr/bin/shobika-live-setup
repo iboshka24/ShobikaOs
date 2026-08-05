@@ -16,9 +16,9 @@ echo "shobikaos-live" > /etc/hostname
 mkdir -p /etc/systemd/system
 ln -sf /dev/null /etc/systemd/system/systemd-firstboot.service
 
-# 2. Create liveuser if not already created
+# 2. Create liveuser if not already created (Standard Arch Linux groups: wheel, video, audio, storage, network, input)
 if ! id -u liveuser >/dev/null 2>&1; then
-    useradd -m -g users -G wheel,video,audio,storage,network,input,netdev -s /bin/bash liveuser
+    useradd -m -g users -G wheel,video,audio,storage,network,input -s /bin/bash liveuser
     echo "liveuser:liveuser" | chpasswd
     echo "root:shobikaos" | chpasswd
     passwd -d liveuser || true

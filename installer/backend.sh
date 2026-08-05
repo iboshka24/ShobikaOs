@@ -70,8 +70,8 @@ echo 'ru_RU.UTF-8 UTF-8' >> /etc/locale.gen
 locale-gen
 echo 'LANG=ru_RU.UTF-8' > /etc/locale.conf
 
-# User creation
-useradd -m -g users -G wheel,video,audio,storage,network,input,netdev -s /bin/bash '$USERNAME'
+# User creation (Standard Arch Linux groups: wheel, video, audio, storage, network, input)
+useradd -m -g users -G wheel,video,audio,storage,network,input -s /bin/bash '$USERNAME'
 echo '$USERNAME:$PASSWORD' | chpasswd
 echo 'root:$PASSWORD' | chpasswd
 echo '%wheel ALL=(ALL:ALL) ALL' > /etc/sudoers.d/wheel

@@ -16,7 +16,6 @@ mkinitcpio
 mkinitcpio-archiso
 syslinux
 memtest86+
-memtest86+-efi
 intel-ucode
 amd-ucode
 nbd

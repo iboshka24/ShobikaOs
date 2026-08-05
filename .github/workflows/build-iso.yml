@@ -16,12 +16,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Initialize Pacman Keys and Install Build Dependencies
+      - name: Prepare Pacman Configuration and Install Dependencies
         run: |
-          pacman -Sy --noconfirm archlinux-keyring || true
-          pacman-key --init || true
-          pacman-key --populate archlinux || true
-          pacman -Sy --noconfirm --needed base-devel archiso grub mtools libisoburn squashfs-tools \
+          # Disable PGP signature checks in container pacman.conf to prevent GPG keyring crashes
+          sed -i 's/SigLevel.*/SigLevel = Never/g' /etc/pacman.conf
+          sed -i 's/LocalFileSigLevel.*/LocalFileSigLevel = Never/g' /etc/pacman.conf
+          pacman -Sy --noconfirm
+          pacman -S --noconfirm --needed base-devel archiso grub mtools libisoburn squashfs-tools \
             gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 graphene
 
       - name: Build Native C GTK4 Graphical Installer Binary

@@ -9,61 +9,58 @@ on:
 jobs:
   build-iso:
     runs-on: ubuntu-latest
-    container:
-      image: archlinux:latest
-      options: --privileged
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Prepare Pacman Configuration and Install Dependencies
+      - name: Build ShobikaOs Live ISO Image inside Privileged Docker
         run: |
-          # Configure official Arch Linux global GeoDNS mirror CDN
-          echo 'Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
-          echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
-          
-          # Disable PGP signature checks in container pacman.conf to prevent GPG keyring crashes
-          sed -i 's/SigLevel.*/SigLevel = Never/g' /etc/pacman.conf
-          sed -i 's/LocalFileSigLevel.*/LocalFileSigLevel = Never/g' /etc/pacman.conf
-          
-          pacman -Sy --noconfirm
-          pacman -S --noconfirm --needed base-devel archiso grub mtools libisoburn squashfs-tools \
-            gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 graphene
-
-      - name: Build Native C GTK4 Graphical Installer Binary
-        run: |
-          mkdir -p iso/airootfs/usr/bin
-          gcc -O2 -Wno-deprecated-declarations -Wno-incompatible-pointer-types -Wno-int-conversion installer/main.c $(pkg-config --cflags --libs gtk4) -o iso/airootfs/usr/bin/shobika-installer
-          cp installer/backend.sh iso/airootfs/usr/bin/shobika-install-backend
-          chmod 755 iso/airootfs/usr/bin/shobika-installer
-          chmod 755 iso/airootfs/usr/bin/shobika-install-backend
-          chmod 755 iso/airootfs/usr/bin/shobika-live-setup || true
-
-      - name: Configure Systemd Live Desktop Services & Symlinks
-        run: |
-          mkdir -p iso/airootfs/etc/systemd/system/multi-user.target.wants
-          mkdir -p iso/airootfs/etc/systemd/system/graphical.target.wants
-          
-          # Enable shobika-live-setup service (runs before lightdm to configure liveuser & desktop)
-          ln -sf /etc/systemd/system/shobika-live-setup.service iso/airootfs/etc/systemd/system/multi-user.target.wants/shobika-live-setup.service
-          
-          # Enable LightDM Display Manager & set Graphical target as default
-          ln -sf /usr/lib/systemd/system/lightdm.service iso/airootfs/etc/systemd/system/display-manager.service
-          ln -sf /usr/lib/systemd/system/lightdm.service iso/airootfs/etc/systemd/system/graphical.target.wants/lightdm.service
-          ln -sf /usr/lib/systemd/system/NetworkManager.service iso/airootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
-          ln -sf /usr/lib/systemd/system/graphical.target iso/airootfs/etc/systemd/system/default.target
-
-      - name: Build ISO Image
-        run: |
-          mkdir -p out
-          rm -rf /tmp/shobika_work
-          
-          # Create loop devices for losetup inside privileged Docker container
-          for i in $(seq 0 15); do
-            mknod -m 0660 /dev/loop$i b 7 $i 2>/dev/null || true
-          done
-          
-          mkarchiso -v -w /tmp/shobika_work -o out iso/
+          docker run --privileged \
+            -v ${{ github.workspace }}:/workspace \
+            -w /workspace \
+            archlinux:latest \
+            bash -c "
+              set -e
+              
+              echo '=== 1. Configure Pacman GeoDNS CDN Mirrors ==='
+              echo 'Server = https://geo.mirror.pkgbuild.com/\$repo/os/\$arch' > /etc/pacman.d/mirrorlist
+              echo 'Server = https://mirror.rackspace.com/archlinux/\$repo/os/\$arch' >> /etc/pacman.d/mirrorlist
+              sed -i 's/SigLevel.*/SigLevel = Never/g' /etc/pacman.conf
+              sed -i 's/LocalFileSigLevel.*/LocalFileSigLevel = Never/g' /etc/pacman.conf
+              
+              echo '=== 2. Install Build Dependencies ==='
+              pacman -Sy --noconfirm
+              pacman -S --noconfirm --needed base-devel archiso grub mtools libisoburn squashfs-tools \
+                gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 graphene
+              
+              echo '=== 3. Compile Native GTK4 C Installer Binary ==='
+              mkdir -p iso/airootfs/usr/bin
+              gcc -O2 -Wno-deprecated-declarations -Wno-incompatible-pointer-types -Wno-int-conversion \
+                installer/main.c \$(pkg-config --cflags --libs gtk4) \
+                -o iso/airootfs/usr/bin/shobika-installer
+              cp installer/backend.sh iso/airootfs/usr/bin/shobika-install-backend
+              chmod 755 iso/airootfs/usr/bin/shobika-installer
+              chmod 755 iso/airootfs/usr/bin/shobika-install-backend
+              chmod 755 iso/airootfs/usr/bin/shobika-live-setup || true
+              
+              echo '=== 4. Configure Systemd Live Desktop Services & Symlinks ==='
+              mkdir -p iso/airootfs/etc/systemd/system/multi-user.target.wants
+              mkdir -p iso/airootfs/etc/systemd/system/graphical.target.wants
+              
+              ln -sf /etc/systemd/system/shobika-live-setup.service iso/airootfs/etc/systemd/system/multi-user.target.wants/shobika-live-setup.service
+              ln -sf /usr/lib/systemd/system/lightdm.service iso/airootfs/etc/systemd/system/display-manager.service
+              ln -sf /usr/lib/systemd/system/lightdm.service iso/airootfs/etc/systemd/system/graphical.target.wants/lightdm.service
+              ln -sf /usr/lib/systemd/system/NetworkManager.service iso/airootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+              ln -sf /usr/lib/systemd/system/graphical.target iso/airootfs/etc/systemd/system/default.target
+              
+              echo '=== 5. Execute mkarchiso ==='
+              mkdir -p out
+              rm -rf /tmp/shobika_work
+              mkarchiso -v -w /tmp/shobika_work -o out iso/
+              
+              echo '=== 6. Build Completed Successfully ==='
+              ls -la out/
+            "
 
       - name: Upload ISO Artifact
         uses: actions/upload-artifact@v4

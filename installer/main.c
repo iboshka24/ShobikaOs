@@ -318,7 +318,7 @@ static void activate(GtkApplication *gtk_app, gpointer user_data) {
     
     // Step 0: Language Selection
     const char *langs[] = {"🇷🇺 Русский (ru_RU.UTF-8)", "🇺🇸 English (en_US.UTF-8)", NULL};
-    app->lang_dropdown = gtk_drop_down_new_from_strings(langs);
+    app->lang_dropdown = gtk_drop_down_new_from_strings((const char * const *)langs);
     gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("1. Выбор Языка Системы", "Выберите основной язык для интерфейса ShobikaOs", app->lang_dropdown), "step-0");
     
     // Step 1: Disk Selection Entry
@@ -353,7 +353,7 @@ static void activate(GtkApplication *gtk_app, gpointer user_data) {
     
     // Step 3: Desktop Environment Selection
     const char *desktops[] = {"🖥️ Cinnamon (Классический флагман)", "📱 GNOME 46", "⚡ KDE Plasma 6", "🚀 XFCE 4.18", "🔷 Hyprland Wayland", NULL};
-    app->de_dropdown = gtk_drop_down_new_from_strings(desktops);
+    app->de_dropdown = gtk_drop_down_new_from_strings((const char * const *)desktops);
     gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("4. Окружение Рабочего Стола", "Выберите графическую оболочку для вашей системы", app->de_dropdown), "step-3");
     
     // Step 4: Confirm Installation

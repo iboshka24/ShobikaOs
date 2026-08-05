@@ -15,7 +15,7 @@ bootmodes=('bios.syslinux.mbr'
 arch="x86_64"
 pacman_conf="pacman.conf"
 airootfs_image_type="squashfs"
-airootfs_image_tool_options=('-comp' 'xz' '-Xbcj' 'x86' '-b' '1M' '-Xdict-size' '1M')
+airootfs_image_tool_options=('-comp' 'xz' '-Xbcj' 'x86' '-b' '1M' '-Xdict-size' '100%')
 file_permissions=(
   ["/etc/shadow"]="0:0:400"
   ["/etc/sudoers.d/99-liveuser"]="0:0:440"
@@ -23,5 +23,4 @@ file_permissions=(
   ["/usr/bin/shobika-live-setup"]="0:0:755"
   ["/usr/bin/shobika-installer"]="0:0:755"
   ["/usr/bin/shobika-install-backend"]="0:0:755"
-  ["/usr/bin/shobika-postinstall"]="0:0:755"
 )

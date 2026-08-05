@@ -18,6 +18,7 @@ airootfs_image_type="squashfs"
 airootfs_image_tool_options=('-comp' 'xz' '-Xbcj' 'x86' '-b' '1M' '-Xdict-size' '1M')
 file_permissions=(
   ["/etc/shadow"]="0:0:400"
+  ["/etc/sudoers.d/99-liveuser"]="0:0:440"
   ["/root"]="0:0:750"
   ["/usr/bin/shobika-live-setup"]="0:0:755"
   ["/usr/bin/shobika-installer"]="0:0:755"

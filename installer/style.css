@@ -1,0 +1,117 @@
+/* ShobikaOs Cyberpunk High-Tech Installer Theme */
+
+window {
+    background-color: #090a0f;
+    color: #e0e6ed;
+    font-family: "Noto Sans", "Roboto", sans-serif;
+}
+
+.header-bar {
+    background: linear-gradient(90deg, #0d0f18 0%, #151928 50%, #0d0f18 100%);
+    border-bottom: 2px solid #00f3ff;
+    padding: 16px 24px;
+}
+
+.logo-text {
+    font-size: 22px;
+    font-weight: 800;
+    color: #00f3ff;
+    letter-spacing: 2px;
+}
+
+.logo-sub {
+    font-size: 13px;
+    color: #7000ff;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.step-card {
+    background: rgba(18, 22, 36, 0.75);
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.step-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.step-subtitle {
+    font-size: 13px;
+    color: #8a99ad;
+    margin-bottom: 16px;
+}
+
+/* Custom Buttons */
+button {
+    background: #141824;
+    color: #00f3ff;
+    border: 1px solid #00f3ff;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 200ms ease;
+}
+
+button:hover {
+    background: #00f3ff;
+    color: #090a0f;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+}
+
+button.suggested-action {
+    background: linear-gradient(135deg, #00f3ff 0%, #7000ff 100%);
+    color: #ffffff;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+}
+
+button.suggested-action:hover {
+    background: linear-gradient(135deg, #33f5ff 0%, #8a2be2 100%);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.8);
+}
+
+/* Form controls */
+entry, passwordentry {
+    background-color: #101420;
+    color: #00f3ff;
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+entry:focus, passwordentry:focus {
+    border-color: #00f3ff;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+}
+
+combobox {
+    background-color: #101420;
+    color: #ffffff;
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    border-radius: 6px;
+}
+
+/* Terminal Log View */
+textview.log-view {
+    background-color: #050608;
+    color: #00ff66;
+    font-family: "JetBrains Mono", "Courier New", monospace;
+    font-size: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 255, 102, 0.3);
+}
+
+progressbar > progress {
+    background: linear-gradient(90deg, #00f3ff 0%, #7000ff 100%);
+    border-radius: 4px;
+}

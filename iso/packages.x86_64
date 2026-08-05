@@ -34,7 +34,7 @@ e2fsprogs
 ntfs-3g
 squashfs-tools
 
-# --- Graphical installer dependencies (GTK4 + Rust) ---
+# --- Graphical installer dependencies ---
 gtk4
 libadwaita
 cairo
@@ -44,8 +44,6 @@ glib2
 librsvg
 graphene
 gobject-introspection
-rust
-cargo
 pkgconf
 
 # --- Display manager for live session ---
@@ -62,19 +60,28 @@ mesa
 vulkan-intel
 vulkan-radeon
 
-# --- Basic live session DE ---
+# --- Live session DE & Apps ---
 cinnamon
+cinnamon-control-center
+cinnamon-screensaver
+cinnamon-session
+cinnamon-settings-daemon
+cinnamon-translations
 nemo
 gnome-terminal
 file-roller
 eog
 evince
 gnome-calculator
+firefox
+gparted
 
-# --- Network ---
+# --- Network & WiFi (CRITICAL) ---
 networkmanager
 network-manager-applet
-dhcpcd
+wpa_supplicant
+wireless_tools
+dialog
 iwd
 nbd
 nfs-utils
@@ -94,10 +101,11 @@ noto-fonts-cjk
 ttf-jetbrains-mono-nerd
 ttf-font-awesome
 
-# --- Branding ---
+# --- Branding & Themes ---
 fastfetch
 papirus-icon-theme
 adwaita-icon-theme
+arc-gtk-theme
 
 # --- Misc ---
 man-db
@@ -113,6 +121,7 @@ pipewire
 pipewire-pulse
 pipewire-alsa
 wireplumber
+pavucontrol
 
 # --- Hardware detection ---
 pciutils

@@ -1,18 +1,30 @@
 #!/bin/bash
 # ShobikaOs Live Environment Initialization Script
-# Prepares liveuser, Cinnamon desktop session, desktop launcher, and LightDM autologin
+# Prepares liveuser, Cinnamon desktop session, desktop launcher, NetworkManager nm-applet, and disables interactive firstboot prompts
 
 set -e
 
-# 1. Create liveuser if not already created
+# 1. Pre-configure system localization & timezone to block any systemd-firstboot interactive console prompts
+mkdir -p /etc
+ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+echo "UTC" > /etc/timezone
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "KEYMAP=us" > /etc/vconsole.conf
+echo "shobikaos-live" > /etc/hostname
+
+# Mask systemd-firstboot to prevent any console prompt
+mkdir -p /etc/systemd/system
+ln -sf /dev/null /etc/systemd/system/systemd-firstboot.service
+
+# 2. Create liveuser if not already created
 if ! id -u liveuser >/dev/null 2>&1; then
-    useradd -m -g users -G wheel,video,audio,storage,network,input -s /bin/bash liveuser
+    useradd -m -g users -G wheel,video,audio,storage,network,input,netdev -s /bin/bash liveuser
     echo "liveuser:liveuser" | chpasswd
     echo "root:shobikaos" | chpasswd
     passwd -d liveuser || true
 fi
 
-# 2. Enable sudo without password for liveuser
+# 3. Enable passwordless sudo for liveuser
 mkdir -p /etc/sudoers.d
 cat > /etc/sudoers.d/99-liveuser << 'EOF'
 liveuser ALL=(ALL:ALL) NOPASSWD: ALL
@@ -20,16 +32,16 @@ root ALL=(ALL:ALL) NOPASSWD: ALL
 EOF
 chmod 440 /etc/sudoers.d/99-liveuser
 
-# 3. Create Desktop directory & Autostart directory
+# 4. Create Desktop & Autostart directories
 mkdir -p /home/liveuser/Desktop /home/liveuser/.config/autostart
 mkdir -p /etc/skel/Desktop /etc/skel/.config/autostart
 
-# 4. Create "Install ShobikaOs" desktop launcher (Linux Mint style)
+# 5. Create "Install ShobikaOs" desktop launcher
 cat > /home/liveuser/Desktop/install-shobikaos.desktop << 'EOF'
 [Desktop Entry]
 Name=Install ShobikaOs
 Name[ru]=Установить ShobikaOs
-Comment=Launch ShobikaOs Graphical Installer
+Comment=Launch High-Tech ShobikaOs Graphical Installer
 Exec=sudo /usr/bin/shobika-installer
 Icon=system-software-install
 Terminal=false
@@ -44,9 +56,22 @@ cp /home/liveuser/Desktop/install-shobikaos.desktop /etc/skel/Desktop/
 cp /home/liveuser/Desktop/install-shobikaos.desktop /etc/skel/.config/autostart/
 chmod +x /etc/skel/Desktop/install-shobikaos.desktop
 
+# 6. Autostart NetworkManager nm-applet for WiFi tray control
+cat > /home/liveuser/.config/autostart/nm-applet.desktop << 'EOF'
+[Desktop Entry]
+Name=Network Manager Applet
+Comment=Manage your network connections
+Exec=nm-applet
+Icon=nm-device-wireless
+Terminal=false
+Type=Application
+NoDisplay=true
+EOF
+cp /home/liveuser/.config/autostart/nm-applet.desktop /etc/skel/.config/autostart/
+
 chown -R liveuser:users /home/liveuser
 
-# 5. Configure LightDM for instant autologin into Cinnamon Live session
+# 7. Configure LightDM for instant autologin into Cinnamon Live session
 mkdir -p /etc/lightdm
 cat > /etc/lightdm/lightdm.conf << 'EOF'
 [LightDM]

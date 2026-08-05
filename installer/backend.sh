@@ -1,6 +1,5 @@
 #!/bin/bash
-# ShobikaOs Installation Backend Script
-# Reads /tmp/shobika-installer.conf and executes full Arch installation
+# ShobikaOs Live Backend Installation Execution Engine
 
 set -e
 
@@ -8,7 +7,7 @@ CONF_FILE="/tmp/shobika-installer.conf"
 if [ -f "$CONF_FILE" ]; then
     source "$CONF_FILE"
 else
-    echo "Configuration file not found!"
+    echo "ERROR: Configuration file /tmp/shobika-installer.conf not found!"
     exit 1
 fi
 
@@ -21,9 +20,13 @@ DESKTOP="${DESKTOP:-cinnamon}"
 DISPLAY_MANAGER="${DISPLAY_MANAGER:-auto}"
 WALLPAPER="${WALLPAPER:-shobikaos-aurora.png}"
 
-echo "Starting installation on $DISK..."
+echo "=== ShobikaOs Installation Backend Engine Started ==="
+echo "Target Disk: $DISK"
+echo "Target User: $USERNAME ($FULLNAME)"
+echo "Target Desktop: $DESKTOP"
 
 # 1. Partition disk (UEFI / GPT)
+echo "[Step 1/5] Formatting disk and creating UEFI/GPT partitions..."
 parted -s "$DISK" mklabel gpt
 parted -s "$DISK" mkpart ESP fat32 1MiB 512MiB
 parted -s "$DISK" set 1 esp on
@@ -44,13 +47,19 @@ mount "$ROOT_PART" /mnt
 mkdir -p /mnt/boot
 mount "$BOOT_PART" /mnt/boot
 
-# 2. Pacstrap base Arch system
-pacstrap /mnt base linux linux-firmware base-devel git sudo nano vim networkmanager pipewire pipewire-pulse pipewire-alsa wireplumber grub efibootmgr fastfetch papirus-icon-theme
+# 2. Pacstrap base system + Firefox + NetworkManager + PipeWire
+echo "[Step 2/5] Running Pacstrap base packages, Firefox, Drivers..."
+pacstrap /mnt base linux linux-firmware base-devel git sudo nano vim \
+    firefox networkmanager network-manager-applet wpa_supplicant wireless_tools dialog \
+    pipewire pipewire-pulse pipewire-alsa wireplumber pavucontrol \
+    grub efibootmgr fastfetch papirus-icon-theme arc-gtk-theme gparted
 
 # 3. Generate fstab
+echo "[Step 3/5] Generating fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # 4. Configure System via arch-chroot
+echo "[Step 4/5] Executing arch-chroot configuration..."
 arch-chroot /mnt bash -c "
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 hwclock --systohc
@@ -62,15 +71,17 @@ locale-gen
 echo 'LANG=ru_RU.UTF-8' > /etc/locale.conf
 
 # User creation
-useradd -m -g users -G wheel,video,audio,storage,network,input -s /bin/bash '$USERNAME'
+useradd -m -g users -G wheel,video,audio,storage,network,input,netdev -s /bin/bash '$USERNAME'
 echo '$USERNAME:$PASSWORD' | chpasswd
 echo 'root:$PASSWORD' | chpasswd
 echo '%wheel ALL=(ALL:ALL) ALL' > /etc/sudoers.d/wheel
+chmod 440 /etc/sudoers.d/wheel
 
 # Enable services
 systemctl enable NetworkManager
 
 # Install Desktop Environment
+echo 'Installing Desktop Environment: $DESKTOP'
 case '$DESKTOP' in
     cinnamon)
         pacman -S --noconfirm cinnamon nemo gnome-terminal lightdm lightdm-gtk-greeter
@@ -94,16 +105,11 @@ case '$DESKTOP' in
         ;;
 esac
 
-# Override DM if specified
-if [ '$DISPLAY_MANAGER' != 'auto' ]; then
-    systemctl disable lightdm gdm sddm || true
-    pacman -S --noconfirm '$DISPLAY_MANAGER' || true
-    systemctl enable '$DISPLAY_MANAGER'
-fi
-
 # Install Bootloader
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=ShobikaOs
 grub-mkconfig -o /boot/grub/grub.cfg
 
-echo 'Installation complete!'
+echo 'ShobikaOs installation completed successfully!'
 "
+
+echo "COMPLETE: Installation process finished."

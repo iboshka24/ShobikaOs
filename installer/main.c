@@ -20,7 +20,6 @@ typedef struct {
     char password[64];
     char hostname[64];
     char desktop[32];
-    char display_manager[32];
     char wallpaper[128];
     
     // Widgets for inputs
@@ -28,12 +27,10 @@ typedef struct {
     GtkWidget *full_entry;
     GtkWidget *pass_entry;
     GtkWidget *host_entry;
-    GtkWidget *lang_combo;
-    GtkWidget *kb_combo;
-    GtkWidget *disk_combo;
-    GtkWidget *de_combo;
-    GtkWidget *dm_combo;
-    GtkWidget *wp_combo;
+    GtkWidget *disk_entry;
+    GtkWidget *de_dropdown;
+    GtkWidget *lang_dropdown;
+    GtkWidget *kb_dropdown;
     
     // Installation screen widgets
     GtkWidget *install_start_btn;
@@ -114,7 +111,7 @@ const char *HIGH_TECH_CSS =
 "button.suggested-action:hover {\n"
 "    background: linear-gradient(135deg, #33f5ff 0%, #8a2be2 100%);\n"
 "}\n"
-"entry, passwordentry {\n"
+"entry {\n"
 "    background-color: #101420;\n"
 "    color: #00f3ff;\n"
 "    border: 1px solid rgba(0, 243, 255, 0.4);\n"
@@ -122,7 +119,7 @@ const char *HIGH_TECH_CSS =
 "    padding: 10px;\n"
 "    font-size: 14px;\n"
 "}\n"
-"combobox {\n"
+"dropdown {\n"
 "    background-color: #101420;\n"
 "    color: #ffffff;\n"
 "    border: 1px solid rgba(0, 243, 255, 0.4);\n"
@@ -143,7 +140,7 @@ const char *HIGH_TECH_CSS =
 
 static void apply_custom_css(void) {
     GtkCssProvider *provider = gtk_css_provider_new();
-    gtk_css_provider_load_from_string(provider, HIGH_TECH_CSS);
+    gtk_css_provider_load_from_data(provider, HIGH_TECH_CSS, -1);
     GdkDisplay *display = gdk_display_get_default();
     if (display) {
         gtk_style_context_add_provider_for_display(display, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
@@ -162,8 +159,8 @@ static void save_installer_config(InstallerApp *app) {
     fprintf(f, "PASSWORD=\"%s\"\n", app->password[0] ? app->password : "shobikaos");
     fprintf(f, "HOSTNAME=\"%s\"\n", app->hostname[0] ? app->hostname : "shobika-pc");
     fprintf(f, "DESKTOP=\"%s\"\n", app->desktop[0] ? app->desktop : "cinnamon");
-    fprintf(f, "DISPLAY_MANAGER=\"%s\"\n", app->display_manager[0] ? app->display_manager : "auto");
-    fprintf(f, "WALLPAPER=\"%s\"\n", app->wallpaper[0] ? app->wallpaper : "shobikaos-aurora.png");
+    fprintf(f, "DISPLAY_MANAGER=\"%s\"\n", "auto");
+    fprintf(f, "WALLPAPER=\"%s\"\n", "shobikaos-aurora.png");
     
     fclose(f);
 }
@@ -210,42 +207,29 @@ static void on_start_installation_clicked(GtkButton *btn, gpointer user_data) {
     InstallerApp *app = (InstallerApp*)user_data;
     gtk_widget_set_sensitive(GTK_WIDGET(btn), FALSE);
     
-    // Extract input fields
     const char *u = gtk_editable_get_text(GTK_EDITABLE(app->user_entry));
-    if (u && strlen(u) > 0) strcpy(app->username, u);
+    if (u && strlen(u) > 0) strncpy(app->username, u, sizeof(app->username) - 1);
     const char *f = gtk_editable_get_text(GTK_EDITABLE(app->full_entry));
-    if (f && strlen(f) > 0) strcpy(app->fullname, f);
+    if (f && strlen(f) > 0) strncpy(app->fullname, f, sizeof(app->fullname) - 1);
     const char *p = gtk_editable_get_text(GTK_EDITABLE(app->pass_entry));
-    if (p && strlen(p) > 0) strcpy(app->password, p);
+    if (p && strlen(p) > 0) strncpy(app->password, p, sizeof(app->password) - 1);
     const char *h = gtk_editable_get_text(GTK_EDITABLE(app->host_entry));
-    if (h && strlen(h) > 0) strcpy(app->hostname, h);
-    
-    const char *lang = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(app->lang_combo));
-    if (lang) strcpy(app->language, lang);
-    const char *kb = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(app->kb_combo));
-    if (kb) strcpy(app->keyboard, kb);
-    const char *dk = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(app->disk_combo));
-    if (dk) strcpy(app->disk, dk);
-    const char *de = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(app->de_combo));
-    if (de) strcpy(app->desktop, de);
-    const char *wp = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(app->wp_combo));
-    if (wp) strcpy(app->wallpaper, wp);
+    if (h && strlen(h) > 0) strncpy(app->hostname, h, sizeof(app->hostname) - 1);
+    const char *d = gtk_editable_get_text(GTK_EDITABLE(app->disk_entry));
+    if (d && strlen(d) > 0) strncpy(app->disk, d, sizeof(app->disk) - 1);
     
     save_installer_config(app);
     
-    // Clear old log file
     FILE *logf = fopen("/tmp/shobika-install.log", "w");
     if (logf) { fputs("=== ShobikaOs Installation Started ===\n", logf); fclose(logf); }
     app->log_file_pos = 0;
     
-    gtk_label_set_text(GTK_LABEL(app->status_label), "⚡ Установка выполняется... Нажмите для просмотра лога.");
+    gtk_label_set_text(GTK_LABEL(app->status_label), "⚡ Установка выполняется... Идёт форматирование и pacstrap.");
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(app->progress_bar), 0.05);
     
-    // Spawn backend installer script with output redirection
     int res = system("/usr/bin/shobika-install-backend /tmp/shobika-installer.conf > /tmp/shobika-install.log 2>&1 &");
     (void)res;
     
-    // Start live log monitoring timer
     app->log_timer_id = g_timeout_add(500, update_install_log, app);
 }
 
@@ -274,7 +258,7 @@ static GtkWidget* create_card_container(const char *title_text, const char *sub_
 static void on_next_step(GtkButton *btn, gpointer user_data) {
     (void)btn;
     InstallerApp *app = (InstallerApp*)user_data;
-    if (app->current_step < 6) {
+    if (app->current_step < 5) {
         app->current_step++;
         char step_id[16];
         snprintf(step_id, sizeof(step_id), "step-%d", app->current_step);
@@ -297,6 +281,16 @@ static void activate(GtkApplication *gtk_app, gpointer user_data) {
     (void)user_data;
     InstallerApp *app = &app_state;
     memset(app, 0, sizeof(InstallerApp));
+    
+    // Set default values
+    strncpy(app->language, "ru_RU.UTF-8", sizeof(app->language) - 1);
+    strncpy(app->keyboard, "us", sizeof(app->keyboard) - 1);
+    strncpy(app->disk, "/dev/sda", sizeof(app->disk) - 1);
+    strncpy(app->username, "shobika", sizeof(app->username) - 1);
+    strncpy(app->fullname, "Shobika User", sizeof(app->fullname) - 1);
+    strncpy(app->password, "shobikaos", sizeof(app->password) - 1);
+    strncpy(app->hostname, "shobika-pc", sizeof(app->hostname) - 1);
+    strncpy(app->desktop, "cinnamon", sizeof(app->desktop) - 1);
     
     apply_custom_css();
     
@@ -322,45 +316,31 @@ static void activate(GtkApplication *gtk_app, gpointer user_data) {
     app->stack = gtk_stack_new();
     gtk_stack_set_transition_type(GTK_STACK(app->stack), GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT);
     
-    // Step 0: Language
-    app->lang_combo = gtk_combo_box_text_new();
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->lang_combo), "ru_RU.UTF-8", "🇷🇺 Русский (Russian)");
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->lang_combo), "en_US.UTF-8", "🇺🇸 English (US)");
-    gtk_combo_box_text_set_active_id(GTK_COMBO_BOX_TEXT(app->lang_combo), "ru_RU.UTF-8");
-    gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("1. Выбор Языка Система", "Выберите основной язык для интерфейса ShobikaOs", app->lang_combo), "step-0");
+    // Step 0: Language Selection
+    const char *langs[] = {"🇷🇺 Русский (ru_RU.UTF-8)", "🇺🇸 English (en_US.UTF-8)", NULL};
+    app->lang_dropdown = gtk_drop_down_new_from_strings(langs);
+    gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("1. Выбор Языка Системы", "Выберите основной язык для интерфейса ShobikaOs", app->lang_dropdown), "step-0");
     
-    // Step 1: Keyboard
-    app->kb_combo = gtk_combo_box_text_new();
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->kb_combo), "us", "US English");
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->kb_combo), "ru", "Russian (us,ru)");
-    gtk_combo_box_text_set_active_id(GTK_COMBO_BOX_TEXT(app->kb_combo), "us");
-    gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("2. Раскладка Клавиатуры", "Выберите раскладку для ввода", app->kb_combo), "step-1");
+    // Step 1: Disk Selection Entry
+    app->disk_entry = gtk_entry_new();
+    gtk_editable_set_text(GTK_EDITABLE(app->disk_entry), "/dev/sda");
+    gtk_entry_set_placeholder_text(GTK_ENTRY(app->disk_entry), "Путь к диску (например /dev/sda или /dev/nvme0n1)");
+    gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("2. Выбор Целевого Диска", "⚠️ Внимание: Все существующие разделы на выбранном диске будут отформатированы!", app->disk_entry), "step-1");
     
-    // Step 2: Disk Selection
-    app->disk_combo = gtk_combo_box_text_new();
-    DIR *d = opendir("/sys/block");
-    if (d) {
-        struct dirent *dir;
-        while ((dir = readdir(d)) != NULL) {
-            if (strncmp(dir->d_name, "sd", 2) == 0 || strncmp(dir->d_name, "nvme", 4) == 0 || strncmp(dir->d_name, "vd", 2) == 0) {
-                char dev_path[64];
-                snprintf(dev_path, sizeof(dev_path), "/dev/%s", dir->d_name);
-                gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->disk_combo), dev_path, dev_path);
-            }
-        }
-        closedir(d);
-    }
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->disk_combo), "/dev/sda", "/dev/sda (Virtual Disk)");
-    gtk_combo_box_text_set_active_id(GTK_COMBO_BOX_TEXT(app->disk_combo), "/dev/sda");
-    gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("3. Выбор Целевого Диска", "⚠️ Внимание: Все существующие разделы на выбранном диске будут отформатированы!", app->disk_combo), "step-2");
-    
-    // Step 3: User Setup
+    // Step 2: User Setup
     GtkWidget *user_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
     app->user_entry = gtk_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(app->user_entry), "Имя пользователя (username)");
+    gtk_editable_set_text(GTK_EDITABLE(app->user_entry), "shobika");
+    
     app->full_entry = gtk_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(app->full_entry), "Полное имя (Full Name)");
-    app->pass_entry = gtk_password_entry_new();
+    gtk_editable_set_text(GTK_EDITABLE(app->full_entry), "Shobika User");
+    
+    app->pass_entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(app->pass_entry), "Пароль (password)");
+    gtk_editable_set_text(GTK_EDITABLE(app->pass_entry), "shobikaos");
+    
     app->host_entry = gtk_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(app->host_entry), "Имя компьютера (hostname)");
     gtk_editable_set_text(GTK_EDITABLE(app->host_entry), "shobika-pc");
@@ -369,31 +349,25 @@ static void activate(GtkApplication *gtk_app, gpointer user_data) {
     gtk_box_append(GTK_BOX(user_box), app->full_entry);
     gtk_box_append(GTK_BOX(user_box), app->pass_entry);
     gtk_box_append(GTK_BOX(user_box), app->host_entry);
-    gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("4. Учетная Запись и Безопасность", "Настройка имени пользователя, пароля и имени хоста", user_box), "step-3");
+    gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("3. Учетная Запись и Безопасность", "Настройка имени пользователя, пароля и имени хоста", user_box), "step-2");
     
-    // Step 4: Desktop Environment
-    app->de_combo = gtk_combo_box_text_new();
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->de_combo), "cinnamon", "🖥️ Cinnamon (Классический флагман ShobikaOs)");
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->de_combo), "gnome", "📱 GNOME 46 (Современный)");
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->de_combo), "kde", "⚡ KDE Plasma 6 (Гибкий)");
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->de_combo), "xfce", "🚀 XFCE 4.18 (Лёгкий)");
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->de_combo), "hyprland", "🔷 Hyprland (Wayland Tiling)");
-    gtk_combo_box_text_set_active_id(GTK_COMBO_BOX_TEXT(app->de_combo), "cinnamon");
-    gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("5. Окружение Рабочего Стола", "Выберите графическую оболочку для вашей системы", app->de_combo), "step-4");
+    // Step 3: Desktop Environment Selection
+    const char *desktops[] = {"🖥️ Cinnamon (Классический флагман)", "📱 GNOME 46", "⚡ KDE Plasma 6", "🚀 XFCE 4.18", "🔷 Hyprland Wayland", NULL};
+    app->de_dropdown = gtk_drop_down_new_from_strings(desktops);
+    gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("4. Окружение Рабочего Стола", "Выберите графическую оболочку для вашей системы", app->de_dropdown), "step-3");
     
-    // Step 5: Wallpaper
-    app->wp_combo = gtk_combo_box_text_new();
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->wp_combo), "shobikaos-aurora.png", "🌌 Aurora (Северное сияние)");
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->wp_combo), "shobikaos-geometric.png", "🔷 Geometric (Киберпространство)");
-    gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(app->wp_combo), "shobikaos-minimal.png", "🟣 Minimal (Темный стильный)");
-    gtk_combo_box_text_set_active_id(GTK_COMBO_BOX_TEXT(app->wp_combo), "shobikaos-aurora.png");
-    gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("6. Обои Рабочего Стола", "Выберите стартовые фирменные обои ShobikaOs", app->wp_combo), "step-5");
+    // Step 4: Confirm Installation
+    GtkWidget *confirm_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
+    GtkWidget *confirm_lbl = gtk_label_new("Система ShobikaOs будет установлена со следующими параметрами:\n• Диск: /dev/sda (ext4 + EFI)\n• Рабочий стол: Cinnamon Desktop\n• Пользователь: shobika\n\nНажмите 'Далее' для перехода к окну установки.");
+    gtk_widget_add_css_class(confirm_lbl, "step-sub");
+    gtk_box_append(GTK_BOX(confirm_box), confirm_lbl);
+    gtk_stack_add_named(GTK_STACK(app->stack), create_card_container("5. Подтверждение Настроек", "Проверьте параметры перед запуском форматирования", confirm_box), "step-4");
     
-    // Step 6: Installation Progress & Live Terminal Output
+    // Step 5: Installation Progress & Live Terminal Output
     GtkWidget *install_card = gtk_box_new(GTK_ORIENTATION_VERTICAL, 16);
     gtk_widget_add_css_class(install_card, "step-card");
     
-    app->status_label = gtk_label_new("🚀 Всё готово к инсталляции ShobikaOs! Нажмите кнопк ниже.");
+    app->status_label = gtk_label_new("🚀 Всё готово к инсталляции ShobikaOs! Нажмите кнопку ниже.");
     gtk_widget_add_css_class(app->status_label, "step-title");
     gtk_box_append(GTK_BOX(install_card), app->status_label);
     
@@ -417,7 +391,7 @@ static void activate(GtkApplication *gtk_app, gpointer user_data) {
     g_signal_connect(app->install_start_btn, "clicked", G_CALLBACK(on_start_installation_clicked), app);
     gtk_box_append(GTK_BOX(install_card), app->install_start_btn);
     
-    gtk_stack_add_named(GTK_STACK(app->stack), install_card, "step-6");
+    gtk_stack_add_named(GTK_STACK(app->stack), install_card, "step-5");
     
     gtk_widget_set_vexpand(app->stack, TRUE);
     gtk_box_append(GTK_BOX(main_box), app->stack);

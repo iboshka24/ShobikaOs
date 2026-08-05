@@ -11,7 +11,7 @@ which
 nano
 vim
 
-# --- Archiso live boot (CRITICAL) ---
+# --- Archiso live boot ---
 mkinitcpio
 mkinitcpio-archiso
 syslinux
@@ -61,11 +61,6 @@ vulkan-radeon
 
 # --- Live session DE & Apps ---
 cinnamon
-cinnamon-control-center
-cinnamon-screensaver
-cinnamon-session
-cinnamon-settings-daemon
-cinnamon-translations
 nemo
 gnome-terminal
 file-roller
@@ -75,14 +70,13 @@ gnome-calculator
 firefox
 gparted
 
-# --- Network & WiFi (CRITICAL) ---
+# --- Network & WiFi ---
 networkmanager
 network-manager-applet
 wpa_supplicant
 wireless_tools
 dialog
 iwd
-nbd
 nfs-utils
 curl
 wget

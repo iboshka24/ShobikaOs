@@ -21,7 +21,7 @@ jobs:
           pacman -Sy --noconfirm archlinux-keyring || true
           pacman-key --init || true
           pacman-key --populate archlinux || true
-          pacman -Syu --noconfirm base-devel archiso grub mtools libisoburn squashfs-tools \
+          pacman -Sy --noconfirm --needed base-devel archiso grub mtools libisoburn squashfs-tools \
             gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 graphene
 
       - name: Build Native C GTK4 Graphical Installer Binary

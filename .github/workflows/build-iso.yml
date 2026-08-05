@@ -18,9 +18,14 @@ jobs:
 
       - name: Prepare Pacman Configuration and Install Dependencies
         run: |
+          # Configure official Arch Linux global GeoDNS mirror CDN
+          echo 'Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
+          echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
+          
           # Disable PGP signature checks in container pacman.conf to prevent GPG keyring crashes
           sed -i 's/SigLevel.*/SigLevel = Never/g' /etc/pacman.conf
           sed -i 's/LocalFileSigLevel.*/LocalFileSigLevel = Never/g' /etc/pacman.conf
+          
           pacman -Sy --noconfirm
           pacman -S --noconfirm --needed base-devel archiso grub mtools libisoburn squashfs-tools \
             gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 graphene

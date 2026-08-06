@@ -26,10 +26,10 @@ fi
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf || true
 
 echo "=== Step 4: Update pacman database ==="
-yes y | pacman -Sy --noconfirm || true
+pacman -Sy --noconfirm --noprogressbar
 
 echo "=== Step 5: Install build tools ==="
-yes y | pacman -S --noconfirm --needed \
+pacman -S --noconfirm --needed --noprogressbar \
   archiso \
   grub \
   mtools \
@@ -42,7 +42,7 @@ yes y | pacman -S --noconfirm --needed \
   cairo \
   pango \
   gdk-pixbuf2 \
-  glib2 || true
+  glib2
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

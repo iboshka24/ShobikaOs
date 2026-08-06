@@ -15,15 +15,14 @@ Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch
 Server = https://arch.hu.fo/archlinux/$repo/os/$arch
 MIRRORLIST
 
-echo "=== Step 3: Disable Pacman signature verification ==="
+echo "=== Step 3: Disable Pacman signature verification & Parallel Downloads ==="
 sed -i 's/^SigLevel.*/SigLevel = Never/' /etc/pacman.conf
 sed -i 's/^LocalFileSigLevel.*/LocalFileSigLevel = Never/' /etc/pacman.conf
+sed -i 's/^ParallelDownloads.*/#ParallelDownloads = 5/' /etc/pacman.conf
 
 if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
   echo "SigLevel = Never" >> /etc/pacman.conf
 fi
-
-sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf || true
 
 echo "=== Step 4: Update pacman database ==="
 pacman -Sy --noconfirm --noprogressbar

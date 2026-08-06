@@ -29,15 +29,18 @@ jobs:
             -w /workspace \
             archlinux:latest \
             bash /workspace/scripts/build_iso.sh 2>&1 | tee build.log
+          sudo chmod 777 build.log 2>/dev/null || true
 
       - name: Push Build Log to build-logs branch
         if: always()
         run: |
+          sudo chmod 777 build.log 2>/dev/null || true
           cp build.log /tmp/build.log 2>/dev/null || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B build-logs
           cp /tmp/build.log build.log 2>/dev/null || true
+          sudo chmod 777 build.log 2>/dev/null || true
           git add build.log 2>/dev/null || true
           git commit -m "build log update $(date -u)" || true
           git push origin build-logs --force || true

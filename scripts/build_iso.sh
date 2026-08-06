@@ -25,21 +25,17 @@ if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
   echo "SigLevel = Never" >> /etc/pacman.conf
 fi
 
-if ! grep -q "^ConnectTimeout" /etc/pacman.conf; then
-  echo "ConnectTimeout = 15" >> /etc/pacman.conf
-fi
-
 echo "=== Step 4: Update pacman database ==="
-(yes || true) | pacman -Sy --noconfirm
+yes "" | pacman -Sy --noconfirm || true
 
 echo "=== Step 5.1: Install Archiso & Isoburn ==="
-(yes || true) | pacman -S --noconfirm --needed archiso mtools libisoburn squashfs-tools
+yes "" | pacman -S --noconfirm --needed archiso mtools libisoburn squashfs-tools || true
 
 echo "=== Step 5.2: Install Bootloader tools ==="
-(yes || true) | pacman -S --noconfirm --needed grub
+yes "" | pacman -S --noconfirm --needed grub || true
 
 echo "=== Step 5.3: Install Compiler tools & GTK4 ==="
-(yes || true) | pacman -S --noconfirm --needed gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2
+yes "" | pacman -S --noconfirm --needed gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 pipewire-jack || true
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

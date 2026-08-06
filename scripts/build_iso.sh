@@ -16,16 +16,12 @@ Server = https://mirror.leaseweb.com/archlinux/$repo/os/$arch
 Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch
 MIRRORLIST
 
-echo "=== Step 3: Disable Pacman signature verification & enable NoConfirm ==="
+echo "=== Step 3: Disable Pacman signature verification ==="
 sed -i 's/^SigLevel.*/SigLevel = Never/' /etc/pacman.conf
 sed -i 's/^LocalFileSigLevel.*/LocalFileSigLevel = Never/' /etc/pacman.conf
 
 if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
   echo "SigLevel = Never" >> /etc/pacman.conf
-fi
-
-if ! grep -q "^NoConfirm" /etc/pacman.conf; then
-  echo "NoConfirm" >> /etc/pacman.conf
 fi
 
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf || true

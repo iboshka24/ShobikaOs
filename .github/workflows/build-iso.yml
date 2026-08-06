@@ -16,11 +16,11 @@ jobs:
       - name: Build ShobikaOs Live ISO Image inside Privileged Docker
         run: |
           chmod +x scripts/build_iso.sh
-          docker run --privileged \
+          docker run --rm --privileged \
             -v ${{ github.workspace }}:/workspace \
             -w /workspace \
             archlinux:latest \
-            /bin/bash /workspace/scripts/build_iso.sh
+            bash -c "set -ex && bash /workspace/scripts/build_iso.sh"
 
       - name: Upload ISO Artifact
         uses: actions/upload-artifact@v4

@@ -30,7 +30,7 @@ echo "=== Step 4: Update pacman database ==="
 pacman -Sy --noconfirm
 
 echo "=== Step 5: Install build tools ==="
-pacman -S --noconfirm --needed \
+yes y | pacman -S --noconfirm --needed \
   archiso \
   grub \
   mtools \
@@ -43,7 +43,7 @@ pacman -S --noconfirm --needed \
   cairo \
   pango \
   gdk-pixbuf2 \
-  glib2
+  glib2 || true
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

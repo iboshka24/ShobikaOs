@@ -25,7 +25,14 @@ jobs:
             -v ${{ github.workspace }}:/workspace \
             -w /workspace \
             archlinux:latest \
-            bash /workspace/scripts/build_iso.sh
+            bash /workspace/scripts/build_iso.sh 2>&1 | tee build.log
+
+      - name: Upload Build Log Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build-Log
+          path: build.log
 
       - name: Upload ISO Artifact
         uses: actions/upload-artifact@v4
@@ -35,8 +42,10 @@ jobs:
           if-no-files-found: warn
 
       - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: always() && startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: out/*.iso
+          files: |
+            out/*.iso
+            build.log
           generate_release_notes: true

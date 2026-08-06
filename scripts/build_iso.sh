@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -ex
-set +o pipefail 2>/dev/null || true
 
 echo "=== Step 1: Show system info ==="
 uname -a
@@ -10,10 +9,9 @@ fi
 
 echo "=== Step 2: Setup Pacman mirrors ==="
 cat > /etc/pacman.d/mirrorlist << 'MIRRORLIST'
-Server = https://archlinux.thaller.ws/$repo/os/$arch
+Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch
 Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch
 Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch
-Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch
 Server = https://arch.hu.fo/archlinux/$repo/os/$arch
 MIRRORLIST
 
@@ -25,42 +23,26 @@ if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
   echo "SigLevel = Never" >> /etc/pacman.conf
 fi
 
-if ! grep -q "^ParallelDownloads" /etc/pacman.conf; then
-  echo "ParallelDownloads = 5" >> /etc/pacman.conf
-fi
+sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf || true
 
 echo "=== Step 4: Update pacman database ==="
-n=0
-until [ "$n" -ge 5 ]
-do
-  pacman -Sy --noconfirm && break
-  n=$((n+1))
-  echo "Pacman sync failed. Retrying ($n/5)..."
-  sleep 3
-done
+yes y | pacman -Sy --noconfirm || true
 
 echo "=== Step 5: Install build tools ==="
-n=0
-until [ "$n" -ge 5 ]
-do
-  pacman -S --noconfirm --needed \
-    archiso \
-    grub \
-    mtools \
-    libisoburn \
-    squashfs-tools \
-    gcc \
-    pkgconf \
-    gtk4 \
-    libadwaita \
-    cairo \
-    pango \
-    gdk-pixbuf2 \
-    glib2 && break
-  n=$((n+1))
-  echo "Pacman install failed. Retrying ($n/5)..."
-  sleep 3
-done
+yes y | pacman -S --noconfirm --needed \
+  archiso \
+  grub \
+  mtools \
+  libisoburn \
+  squashfs-tools \
+  gcc \
+  pkgconf \
+  gtk4 \
+  libadwaita \
+  cairo \
+  pango \
+  gdk-pixbuf2 \
+  glib2 || true
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

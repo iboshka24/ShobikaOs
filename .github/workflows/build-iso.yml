@@ -9,18 +9,73 @@ on:
 jobs:
   build-iso:
     runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build ShobikaOs Live ISO Image inside Privileged Docker
+      - name: Setup Pacman mirrors and keyring
         run: |
-          chmod +x scripts/build_iso.sh
-          docker run --rm --privileged \
-            -v ${{ github.workspace }}:/workspace \
-            -w /workspace \
-            archlinux:latest \
-            bash -c "set -ex && bash /workspace/scripts/build_iso.sh"
+          cat > /etc/pacman.d/mirrorlist << 'MIRROREOF'
+          Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch
+          Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch
+          MIRROREOF
+          pacman-key --init
+          pacman-key --populate archlinux
+          pacman -Sy --noconfirm archlinux-keyring
+
+      - name: Install build dependencies
+        run: |
+          sed -i 's/^SigLevel.*/SigLevel = Never/' /etc/pacman.conf
+          pacman -Su --noconfirm
+          pacman -S --noconfirm --needed \
+            archiso grub mtools libisoburn squashfs-tools \
+            gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2
+
+      - name: Compile GTK4 installer binary
+        run: |
+          mkdir -p iso/airootfs/usr/bin
+          gcc -O2 \
+            -Wno-deprecated-declarations \
+            -Wno-incompatible-pointer-types \
+            -Wno-int-conversion \
+            $(pkg-config --cflags gtk4) \
+            installer/main.c \
+            $(pkg-config --libs gtk4) \
+            -o iso/airootfs/usr/bin/shobika-installer
+          cp installer/backend.sh iso/airootfs/usr/bin/shobika-install-backend
+          chmod 755 iso/airootfs/usr/bin/shobika-installer
+          chmod 755 iso/airootfs/usr/bin/shobika-install-backend
+          if [ -f iso/airootfs/usr/bin/shobika-live-setup ]; then
+            chmod 755 iso/airootfs/usr/bin/shobika-live-setup
+          fi
+
+      - name: Create systemd symlinks for live environment
+        run: |
+          mkdir -p iso/airootfs/etc/systemd/system/multi-user.target.wants
+          mkdir -p iso/airootfs/etc/systemd/system/graphical.target.wants
+          ln -sf /usr/lib/systemd/system/NetworkManager.service \
+            iso/airootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+          ln -sf /usr/lib/systemd/system/lightdm.service \
+            iso/airootfs/etc/systemd/system/display-manager.service
+          ln -sf /usr/lib/systemd/system/lightdm.service \
+            iso/airootfs/etc/systemd/system/graphical.target.wants/lightdm.service
+          ln -sf /usr/lib/systemd/system/graphical.target \
+            iso/airootfs/etc/systemd/system/default.target
+          if [ -f iso/airootfs/etc/systemd/system/shobika-live-setup.service ]; then
+            ln -sf /etc/systemd/system/shobika-live-setup.service \
+              iso/airootfs/etc/systemd/system/multi-user.target.wants/shobika-live-setup.service
+          fi
+
+      - name: Build ISO with mkarchiso
+        run: |
+          mkdir -p out
+          rm -rf /tmp/shobika_work
+          mkarchiso -v -w /tmp/shobika_work -o out iso/
+          ls -lh out/
 
       - name: Upload ISO Artifact
         uses: actions/upload-artifact@v4

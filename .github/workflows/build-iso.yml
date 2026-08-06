@@ -6,6 +6,9 @@ on:
     tags: ['v*']
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-iso:
     runs-on: ubuntu-latest
@@ -15,6 +18,7 @@ jobs:
 
       - name: Build ShobikaOs ISO inside Arch Linux Docker Container
         run: |
+          set -o pipefail
           docker run --rm \
             --privileged \
             --security-opt seccomp=unconfined \
@@ -49,7 +53,6 @@ jobs:
         with:
           name: ShobikaOs-ISO
           path: out/*.iso
-          if-no-files-found: warn
 
       - name: Create Release
         if: always() && startsWith(github.ref, 'refs/tags/')

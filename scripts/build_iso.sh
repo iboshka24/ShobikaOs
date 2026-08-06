@@ -26,27 +26,19 @@ fi
 sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf || true
 
 echo "=== Step 4: Update pacman database ==="
-set +e
-yes "" | pacman -Sy --noconfirm --noprogressbar
-set -e
+pacman -Sy --noconfirm --noprogressbar
 
-echo "=== Step 5: Install build tools ==="
-set +e
-yes "" | pacman -S --noconfirm --needed --noprogressbar \
-  archiso \
-  grub \
-  mtools \
-  libisoburn \
-  squashfs-tools \
-  gcc \
-  pkgconf \
-  gtk4 \
-  libadwaita \
-  cairo \
-  pango \
-  gdk-pixbuf2 \
-  glib2
-set -e
+echo "=== Step 5.1: Install Archiso & Isoburn ==="
+pacman -S --noconfirm --needed --noprogressbar archiso mtools libisoburn squashfs-tools
+
+echo "=== Step 5.2: Install Bootloader tools ==="
+pacman -S --noconfirm --needed --noprogressbar grub
+
+echo "=== Step 5.3: Install Compiler tools ==="
+pacman -S --noconfirm --needed --noprogressbar gcc pkgconf
+
+echo "=== Step 5.4: Install GTK4 UI libraries ==="
+pacman -S --noconfirm --needed --noprogressbar gtk4 libadwaita cairo pango gdk-pixbuf2 glib2
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

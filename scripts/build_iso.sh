@@ -15,29 +15,25 @@ Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch
 Server = https://arch.hu.fo/archlinux/$repo/os/$arch
 MIRRORLIST
 
-echo "=== Step 3: Disable Pacman signature verification & Parallel Downloads ==="
+echo "=== Step 3: Disable Pacman signature verification ==="
 sed -i 's/^SigLevel.*/SigLevel = Never/' /etc/pacman.conf
 sed -i 's/^LocalFileSigLevel.*/LocalFileSigLevel = Never/' /etc/pacman.conf
-sed -i 's/^ParallelDownloads.*/#ParallelDownloads = 5/' /etc/pacman.conf
 
 if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
   echo "SigLevel = Never" >> /etc/pacman.conf
 fi
 
 echo "=== Step 4: Update pacman database ==="
-pacman -Sy --noconfirm --noprogressbar
+(yes || true) | pacman -Sy --noconfirm
 
 echo "=== Step 5.1: Install Archiso & Isoburn ==="
-pacman -S --noconfirm --needed --noprogressbar archiso mtools libisoburn squashfs-tools
+(yes || true) | pacman -S --noconfirm --needed archiso mtools libisoburn squashfs-tools
 
 echo "=== Step 5.2: Install Bootloader tools ==="
-pacman -S --noconfirm --needed --noprogressbar grub
+(yes || true) | pacman -S --noconfirm --needed grub
 
-echo "=== Step 5.3: Install Compiler tools ==="
-pacman -S --noconfirm --needed --noprogressbar gcc pkgconf
-
-echo "=== Step 5.4: Install GTK4 UI libraries ==="
-pacman -S --noconfirm --needed --noprogressbar gtk4 libadwaita cairo pango gdk-pixbuf2 glib2
+echo "=== Step 5.3: Install Compiler tools & GTK4 ==="
+(yes || true) | pacman -S --noconfirm --needed gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

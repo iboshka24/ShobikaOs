@@ -43,7 +43,7 @@ jobs:
           sudo chmod 777 build.log 2>/dev/null || true
           git add build.log 2>/dev/null || true
           git commit -m "build log update $(date -u)" || true
-          git push origin build-logs --force || true
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/iboshka24/ShobikaOs.git build-logs --force
 
       - name: Upload Build Log Artifact
         if: always()

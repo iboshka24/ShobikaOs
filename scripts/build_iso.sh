@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -ex
+set +o pipefail 2>/dev/null || true
 
 echo "=== Step 1: Show system info ==="
 uname -a
@@ -30,7 +31,7 @@ echo "=== Step 4: Update pacman database ==="
 pacman -Sy --noconfirm
 
 echo "=== Step 5: Install build tools ==="
-yes y | pacman -S --noconfirm --needed \
+pacman -S --noconfirm --needed \
   archiso \
   grub \
   mtools \
@@ -43,7 +44,7 @@ yes y | pacman -S --noconfirm --needed \
   cairo \
   pango \
   gdk-pixbuf2 \
-  glib2 || true
+  glib2
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

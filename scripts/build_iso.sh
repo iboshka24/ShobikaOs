@@ -7,20 +7,26 @@ if [ -f /etc/os-release ]; then
   cat /etc/os-release
 fi
 
-echo "=== Step 2: Setup Pacman mirrors ==="
+echo "=== Step 2: Setup Fast Pacman mirrors ==="
 cat > /etc/pacman.d/mirrorlist << 'MIRRORLIST'
-Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch
 Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch
 Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch
+Server = https://mirror.osuosl.org/archlinux/$repo/os/$arch
 Server = https://arch.hu.fo/archlinux/$repo/os/$arch
+Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch
 MIRRORLIST
 
-echo "=== Step 3: Disable Pacman signature verification ==="
+echo "=== Step 3: Configure Pacman settings ==="
 sed -i 's/^SigLevel.*/SigLevel = Never/' /etc/pacman.conf
 sed -i 's/^LocalFileSigLevel.*/LocalFileSigLevel = Never/' /etc/pacman.conf
+sed -i 's/^ParallelDownloads.*/#ParallelDownloads = 5/' /etc/pacman.conf
 
 if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
   echo "SigLevel = Never" >> /etc/pacman.conf
+fi
+
+if ! grep -q "^ConnectTimeout" /etc/pacman.conf; then
+  echo "ConnectTimeout = 15" >> /etc/pacman.conf
 fi
 
 echo "=== Step 4: Update pacman database ==="

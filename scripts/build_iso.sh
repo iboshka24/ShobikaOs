@@ -22,10 +22,10 @@ if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
 fi
 
 echo "=== Step 4: Update pacman database ==="
-pacman -Sy --noconfirm
+yes "" | pacman -Sy --noconfirm
 
 echo "=== Step 5: Install build tools ==="
-pacman -S --noconfirm --needed \
+yes "" | pacman -S --noconfirm --needed \
   archiso \
   grub \
   mtools \

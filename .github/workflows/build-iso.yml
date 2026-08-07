@@ -35,14 +35,16 @@ jobs:
         if: always()
         run: |
           sudo chmod 777 build.log 2>/dev/null || true
-          cp build.log /tmp/build.log 2>/dev/null || true
+          mkdir -p /tmp/log_backup
+          cp build.log /tmp/log_backup/build.log 2>/dev/null || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin build-logs || true
           git checkout -B build-logs
-          cp /tmp/build.log build.log 2>/dev/null || true
+          cp /tmp/log_backup/build.log build.log
           sudo chmod 777 build.log 2>/dev/null || true
-          git add build.log 2>/dev/null || true
-          git commit -m "build log update $(date -u)" --allow-empty || true
+          git add build.log
+          git commit -m "build log update $(date -u)" --allow-empty
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/iboshka24/ShobikaOs.git build-logs --force
 
       - name: Upload Build Log Artifact

@@ -16,31 +16,28 @@ Server = https://archlinux.thaller.ws/$repo/os/$arch
 MIRRORLIST
 
 echo "=== Step 3: Configure Pacman settings ==="
-sed -i 's/^SigLevel.*/SigLevel = Never/' /etc/pacman.conf
-sed -i 's/^LocalFileSigLevel.*/LocalFileSigLevel = Never/' /etc/pacman.conf
-sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 3/' /etc/pacman.conf
+cat > /etc/pacman.conf << 'PACMANCONF'
+[options]
+HoldPkg = pacman glibc
+Architecture = auto
+SigLevel = Never
+LocalFileSigLevel = Never
+ParallelDownloads = 5
 
-if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
-  echo "SigLevel = Never" >> /etc/pacman.conf
-fi
-if ! grep -q "^ParallelDownloads" /etc/pacman.conf; then
-  echo "ParallelDownloads = 3" >> /etc/pacman.conf
-fi
+[core]
+Include = /etc/pacman.d/mirrorlist
+
+[extra]
+Include = /etc/pacman.d/mirrorlist
+PACMANCONF
 
 echo "=== Step 4: Update pacman database ==="
-pacman -Sy --noconfirm --noprogressbar || true
+pacman -Sy --noconfirm --noprogressbar
 
-echo "=== Step 5a: Install archiso tools ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
-  archiso mtools libisoburn squashfs-tools grub || true
-
-echo "=== Step 5b: Install build tools ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
-  gcc pkgconf glib2 || true
-
-echo "=== Step 5c: Install GTK4 & LibAdwaita ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
-  gtk4 libadwaita || true
+echo "=== Step 5: Install archiso tools, build tools & GTK4 ==="
+pacman -S --noconfirm --needed --noprogressbar \
+  archiso mtools libisoburn squashfs-tools grub \
+  gcc pkgconf glib2 gtk4 libadwaita
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

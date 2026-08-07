@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-exec > >(tee -a /workspace/build.log) 2>&1
 set -ex
 
 echo "=== Step 1: Show system info ==="
@@ -29,27 +28,35 @@ if ! grep -q "^ParallelDownloads" /etc/pacman.conf; then
 fi
 
 echo "=== Step 4: Update pacman database ==="
-pacman -Sy --noconfirm --noprogressbar
+stdbuf -o0 -e0 pacman -Sy --noconfirm --noprogressbar
 
 echo "=== Step 5a: Install archiso tools ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   archiso mtools libisoburn squashfs-tools grub
 
 echo "=== Step 5b: Install build tools ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   gcc pkgconf glib2
 
-echo "=== Step 5c1: Install Cairo & GdkPixbuf ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
-  cairo gdk-pixbuf2
+echo "=== Step 5c: Install Cairo ==="
+stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+  cairo
 
-echo "=== Step 5c2: Install Pango ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+echo "=== Step 5d: Install GdkPixbuf ==="
+stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+  gdk-pixbuf2
+
+echo "=== Step 5e: Install Pango ==="
+stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   pango
 
-echo "=== Step 5d: Install GTK4 & LibAdwaita ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
-  gtk4 libadwaita
+echo "=== Step 5f: Install GTK4 ==="
+stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+  gtk4
+
+echo "=== Step 5g: Install LibAdwaita ==="
+stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+  libadwaita
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin
@@ -96,7 +103,7 @@ echo "=== Step 8: Run mkarchiso ==="
 mkdir -p out
 rm -rf /tmp/shobika_work
 
-mkarchiso -v -w /tmp/shobika_work -o out iso/
+stdbuf -o0 -e0 mkarchiso -v -w /tmp/shobika_work -o out iso/
 
 echo "=== Build Complete ==="
 ls -lh out/

@@ -37,9 +37,13 @@ echo "=== Step 5b: Install build tools ==="
 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   gcc pkgconf glib2
 
-echo "=== Step 5c: Install GTK4 UI libraries ==="
+echo "=== Step 5c: Install Core Graphics (Cairo/Pango/Pixbuf) ==="
 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
-  gtk4 libadwaita cairo pango gdk-pixbuf2
+  cairo pango gdk-pixbuf2
+
+echo "=== Step 5d: Install GTK4 & LibAdwaita ==="
+pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+  gtk4 libadwaita
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

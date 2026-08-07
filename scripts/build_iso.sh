@@ -17,29 +17,28 @@ MIRRORLIST
 echo "=== Step 3: Configure Pacman settings ==="
 sed -i 's/^SigLevel.*/SigLevel = Never/' /etc/pacman.conf
 sed -i 's/^LocalFileSigLevel.*/LocalFileSigLevel = Never/' /etc/pacman.conf
-sed -i 's/^ParallelDownloads.*/#ParallelDownloads = 5/' /etc/pacman.conf
 
 if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
   echo "SigLevel = Never" >> /etc/pacman.conf
 fi
 
 echo "=== Step 4: Update pacman database ==="
-pacman -Sy --noconfirm --noprogressbar
+stdbuf -o0 -e0 pacman -Sy --noconfirm --noprogressbar
 
 echo "=== Step 5a: Install archiso tools ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   archiso mtools libisoburn squashfs-tools grub
 
 echo "=== Step 5b: Install build tools ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   gcc pkgconf glib2
 
 echo "=== Step 5c: Install Core Graphics (Cairo/Pango/Pixbuf) ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   cairo pango gdk-pixbuf2
 
 echo "=== Step 5d: Install GTK4 & LibAdwaita ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   gtk4 libadwaita
 
 echo "=== Step 6: Compile GTK4 Installer ==="
@@ -87,7 +86,7 @@ echo "=== Step 8: Run mkarchiso ==="
 mkdir -p out
 rm -rf /tmp/shobika_work
 
-mkarchiso -v -w /tmp/shobika_work -o out iso/
+stdbuf -o0 -e0 mkarchiso -v -w /tmp/shobika_work -o out iso/
 
 echo "=== Build Complete ==="
 ls -lh out/

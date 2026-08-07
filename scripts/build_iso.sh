@@ -29,7 +29,7 @@ echo "=== Step 4: Update pacman database ==="
 pacman -Sy --noconfirm
 
 echo "=== Step 5: Install build tools & dependencies ==="
-pacman -S --noconfirm --needed \
+printf 'y\n%.0s' {1..50} | pacman -S --noconfirm --needed \
   archiso \
   mtools \
   libisoburn \
@@ -43,7 +43,7 @@ pacman -S --noconfirm --needed \
   pango \
   gdk-pixbuf2 \
   glib2 \
-  pipewire-jack
+  pipewire-jack || true
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

@@ -7,13 +7,11 @@ if [ -f /etc/os-release ]; then
   cat /etc/os-release
 fi
 
-echo "=== Step 2: Setup Fast Pacman HTTP mirrors ==="
+echo "=== Step 2: Setup Arch Pacman mirrors ==="
 cat > /etc/pacman.d/mirrorlist << 'MIRRORLIST'
-Server = http://mirror.rackspace.com/archlinux/$repo/os/$arch
-Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch
-Server = http://mirror.osuosl.org/archlinux/$repo/os/$arch
-Server = http://arch.hu.fo/archlinux/$repo/os/$arch
-Server = http://geo.mirror.pkgbuild.com/$repo/os/$arch
+Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch
+Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch
+Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch
 MIRRORLIST
 
 echo "=== Step 3: Configure Pacman settings ==="
@@ -25,12 +23,11 @@ if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
   echo "SigLevel = Never" >> /etc/pacman.conf
 fi
 
-echo "=== Step 4: Update pacman database & ca-certificates ==="
+echo "=== Step 4: Update pacman database ==="
 pacman -Sy --noconfirm --noprogressbar
-pacman -S --noconfirm --needed --noprogressbar ca-certificates archlinux-keyring || true
 
 echo "=== Step 5: Install build tools & dependencies ==="
-printf 'y\n%.0s' {1..50} | pacman -S --noconfirm --needed --noprogressbar \
+pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   archiso \
   mtools \
   libisoburn \
@@ -43,8 +40,7 @@ printf 'y\n%.0s' {1..50} | pacman -S --noconfirm --needed --noprogressbar \
   cairo \
   pango \
   gdk-pixbuf2 \
-  glib2 \
-  pipewire-jack || true
+  glib2
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

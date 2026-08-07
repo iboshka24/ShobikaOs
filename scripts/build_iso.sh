@@ -33,9 +33,13 @@ echo "=== Step 5b: Install build tools ==="
 stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   gcc pkgconf glib2
 
-echo "=== Step 5c: Install Core Graphics (Cairo/Pango/Pixbuf) ==="
+echo "=== Step 5c1: Install Cairo & GdkPixbuf ==="
 stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
-  cairo pango gdk-pixbuf2
+  cairo gdk-pixbuf2
+
+echo "=== Step 5c2: Install Pango ==="
+stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+  pango
 
 echo "=== Step 5d: Install GTK4 & LibAdwaita ==="
 stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \

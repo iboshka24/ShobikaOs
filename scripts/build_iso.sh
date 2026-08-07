@@ -27,23 +27,19 @@ if ! grep -q "^ParallelDownloads" /etc/pacman.conf; then
 fi
 
 echo "=== Step 4: Update pacman database ==="
-yes | pacman -Sy --noconfirm --noprogressbar
+pacman -Sy --noconfirm --noprogressbar
 
-echo "=== Step 5: Install build tools & dependencies ==="
-yes | pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
-  archiso \
-  mtools \
-  libisoburn \
-  squashfs-tools \
-  grub \
-  gcc \
-  pkgconf \
-  gtk4 \
-  libadwaita \
-  cairo \
-  pango \
-  gdk-pixbuf2 \
-  glib2
+echo "=== Step 5a: Install archiso tools ==="
+pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+  archiso mtools libisoburn squashfs-tools grub
+
+echo "=== Step 5b: Install build tools ==="
+pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+  gcc pkgconf glib2
+
+echo "=== Step 5c: Install GTK4 UI libraries ==="
+pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+  gtk4 libadwaita cairo pango gdk-pixbuf2
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

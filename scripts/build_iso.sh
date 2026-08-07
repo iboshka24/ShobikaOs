@@ -23,12 +23,11 @@ if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
   echo "SigLevel = Never" >> /etc/pacman.conf
 fi
 
-echo "=== Step 4: Update pacman database & ca-certificates ==="
-pacman -Sy --noconfirm --noprogressbar
-pacman -S --noconfirm --needed --noprogressbar ca-certificates archlinux-keyring || true
+echo "=== Step 4: Update pacman database ==="
+(timeout 15s yes || true) | pacman -Sy --noconfirm --noprogressbar || true
 
 echo "=== Step 5: Install build tools & dependencies ==="
-pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+(timeout 30s yes || true) | pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   archiso \
   mtools \
   libisoburn \

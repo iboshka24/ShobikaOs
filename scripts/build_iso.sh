@@ -26,16 +26,24 @@ if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
 fi
 
 echo "=== Step 4: Update pacman database ==="
-yes "" | pacman -Sy --noconfirm || true
+pacman -Sy --noconfirm
 
-echo "=== Step 5.1: Install Archiso & Isoburn ==="
-yes "" | pacman -S --noconfirm --needed archiso mtools libisoburn squashfs-tools || true
-
-echo "=== Step 5.2: Install Bootloader tools ==="
-yes "" | pacman -S --noconfirm --needed grub || true
-
-echo "=== Step 5.3: Install Compiler tools & GTK4 ==="
-yes "" | pacman -S --noconfirm --needed gcc pkgconf gtk4 libadwaita cairo pango gdk-pixbuf2 glib2 pipewire-jack || true
+echo "=== Step 5: Install build tools & dependencies ==="
+pacman -S --noconfirm --needed \
+  archiso \
+  mtools \
+  libisoburn \
+  squashfs-tools \
+  grub \
+  gcc \
+  pkgconf \
+  gtk4 \
+  libadwaita \
+  cairo \
+  pango \
+  gdk-pixbuf2 \
+  glib2 \
+  pipewire-jack
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

@@ -27,10 +27,10 @@ if ! grep -q "^ParallelDownloads" /etc/pacman.conf; then
 fi
 
 echo "=== Step 4: Update pacman database ==="
-echo "y" | pacman -Sy --noconfirm --noprogressbar
+yes | pacman -Sy --noconfirm --noprogressbar
 
 echo "=== Step 5: Install build tools & dependencies ==="
-echo "y" | pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+yes | pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   archiso \
   mtools \
   libisoburn \

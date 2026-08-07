@@ -17,13 +17,10 @@ MIRRORLIST
 echo "=== Step 3: Configure Pacman settings ==="
 sed -i 's/^SigLevel.*/SigLevel = Never/' /etc/pacman.conf
 sed -i 's/^LocalFileSigLevel.*/LocalFileSigLevel = Never/' /etc/pacman.conf
-sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf
+sed -i 's/^ParallelDownloads.*/#ParallelDownloads = 5/' /etc/pacman.conf
 
 if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
   echo "SigLevel = Never" >> /etc/pacman.conf
-fi
-if ! grep -q "^ParallelDownloads" /etc/pacman.conf; then
-  echo "ParallelDownloads = 5" >> /etc/pacman.conf
 fi
 
 echo "=== Step 4: Update pacman database ==="

@@ -35,13 +35,11 @@ jobs:
         if: always()
         run: |
           sudo chmod 777 build.log 2>/dev/null || true
-          mkdir -p /tmp/log_backup
-          cp build.log /tmp/log_backup/build.log 2>/dev/null || true
+          cp build.log /tmp/current_build.log 2>/dev/null || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin build-logs || true
-          git checkout -B build-logs
-          cp /tmp/log_backup/build.log build.log
+          git checkout -f -B build-logs
+          cp /tmp/current_build.log build.log 2>/dev/null || true
           sudo chmod 777 build.log 2>/dev/null || true
           git add build.log
           git commit -m "build log update $(date -u)" --allow-empty

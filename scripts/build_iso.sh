@@ -22,8 +22,8 @@ if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
   echo "SigLevel = Never" >> /etc/pacman.conf
 fi
 
-echo "=== Step 4: Update pacman database ==="
-stdbuf -o0 -e0 pacman -Sy --noconfirm --noprogressbar
+echo "=== Step 4: Full System Upgrade pacman database ==="
+stdbuf -o0 -e0 pacman -Syu --noconfirm --noprogressbar --overwrite "*"
 
 echo "=== Step 5a: Install archiso tools ==="
 stdbuf -o0 -e0 pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \

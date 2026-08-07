@@ -28,10 +28,10 @@ if ! grep -q "^ParallelDownloads" /etc/pacman.conf; then
 fi
 
 echo "=== Step 4: Update pacman database ==="
-pacman -Sy --noconfirm
+printf 'y\n%.0s' {1..10} | pacman -Sy --noconfirm || true
 
 echo "=== Step 5: Install build tools & dependencies ==="
-pacman -S --noconfirm --needed --overwrite "*" \
+printf 'y\n%.0s' {1..10} | pacman -S --noconfirm --needed --overwrite "*" \
   archiso \
   mtools \
   libisoburn \
@@ -44,7 +44,7 @@ pacman -S --noconfirm --needed --overwrite "*" \
   cairo \
   pango \
   gdk-pixbuf2 \
-  glib2
+  glib2 || true
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

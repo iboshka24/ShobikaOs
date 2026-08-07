@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+exec 1>/workspace/build.log 2>&1
 set -ex
 
 echo "=== Step 1: Show system info ==="

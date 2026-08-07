@@ -7,31 +7,34 @@ if [ -f /etc/os-release ]; then
   cat /etc/os-release
 fi
 
-echo "=== Step 2: Setup Fast Pacman mirrors ==="
+echo "=== Step 2: Setup Fast Pacman HTTP mirrors ==="
 cat > /etc/pacman.d/mirrorlist << 'MIRRORLIST'
-Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch
-Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch
-Server = https://mirror.osuosl.org/archlinux/$repo/os/$arch
-Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch
+Server = http://geo.mirror.pkgbuild.com/$repo/os/$arch
+Server = http://mirror.rackspace.com/archlinux/$repo/os/$arch
+Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch
 MIRRORLIST
 
 echo "=== Step 3: Configure Pacman settings ==="
 sed -i 's/^SigLevel.*/SigLevel = Never/' /etc/pacman.conf
 sed -i 's/^LocalFileSigLevel.*/LocalFileSigLevel = Never/' /etc/pacman.conf
-sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 10/' /etc/pacman.conf
+sed -i 's/^#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf
+sed -i 's/^#DisableSandbox/DisableSandbox/' /etc/pacman.conf
 
 if ! grep -q "^SigLevel = Never" /etc/pacman.conf; then
   echo "SigLevel = Never" >> /etc/pacman.conf
 fi
 if ! grep -q "^ParallelDownloads" /etc/pacman.conf; then
-  echo "ParallelDownloads = 10" >> /etc/pacman.conf
+  echo "ParallelDownloads = 5" >> /etc/pacman.conf
+fi
+if ! grep -q "^DisableSandbox" /etc/pacman.conf; then
+  echo "DisableSandbox" >> /etc/pacman.conf
 fi
 
 echo "=== Step 4: Update pacman database ==="
-printf 'y\n%.0s' {1..10} | pacman -Sy --noconfirm --noprogressbar || true
+pacman -Sy --noconfirm --noprogressbar
 
 echo "=== Step 5: Install build tools & dependencies ==="
-printf 'y\n%.0s' {1..10} | pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
+pacman -S --noconfirm --needed --noprogressbar --overwrite "*" \
   archiso \
   mtools \
   libisoburn \
@@ -44,7 +47,7 @@ printf 'y\n%.0s' {1..10} | pacman -S --noconfirm --needed --noprogressbar --over
   cairo \
   pango \
   gdk-pixbuf2 \
-  glib2 || true
+  glib2
 
 echo "=== Step 6: Compile GTK4 Installer ==="
 mkdir -p iso/airootfs/usr/bin

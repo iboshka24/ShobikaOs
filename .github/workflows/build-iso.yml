@@ -18,8 +18,6 @@ jobs:
 
       - name: Build ShobikaOs ISO inside Arch Linux Docker Container
         run: |
-          touch build.log
-          sudo chmod 777 build.log
           docker run --rm -i \
             --privileged \
             --security-opt seccomp=unconfined \
@@ -30,7 +28,7 @@ jobs:
             -v ${{ github.workspace }}:/workspace \
             -w /workspace \
             archlinux:latest \
-            bash /workspace/scripts/build_iso.sh || true
+            bash /workspace/scripts/build_iso.sh > build.log 2>&1 || true
           sudo chmod 777 build.log 2>/dev/null || true
 
       - name: Push Build Log to build-logs branch
